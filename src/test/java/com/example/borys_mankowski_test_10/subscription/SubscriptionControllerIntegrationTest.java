@@ -60,7 +60,7 @@ public class SubscriptionControllerIntegrationTest {
     @Test
     public void testCancelSubscription() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/v1/subscriptions/cancel/1")
+                        .delete("/api/v1/subscriptions/1/cancel")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }

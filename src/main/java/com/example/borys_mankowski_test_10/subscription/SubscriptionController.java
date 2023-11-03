@@ -2,6 +2,7 @@ package com.example.borys_mankowski_test_10.subscription;
 
 import com.example.borys_mankowski_test_10.subscription.model.CreateSubscriptionCommand;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionDto;
+import com.example.borys_mankowski_test_10.subscription.model.SubscriptionMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ public class SubscriptionController {
     private SubscriptionService subscriptionService;
 
     @PostMapping
+    @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<SubscriptionDto> createSubscription(@RequestBody CreateSubscriptionCommand createSubscriptionCommand) {
         SubscriptionDto createdSubscription = subscriptionService.createSubscription(createSubscriptionCommand);
         return new ResponseEntity<>(createdSubscription, HttpStatus.CREATED);
@@ -25,9 +27,10 @@ public class SubscriptionController {
 
     @DeleteMapping("{subscriptionId}/cancel")
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<String> deleteSubscription(@PathVariable Long subscriptionId) {
+    public ResponseEntity<SubscriptionMessage> deleteSubscription(@PathVariable Long subscriptionId) {
         subscriptionService.cancelSubscription(subscriptionId);
-        return ResponseEntity.ok("Subscription successfully canceled");
+        SubscriptionMessage message = new SubscriptionMessage("Subscription successfully canceled");
+        return ResponseEntity.ok(message);
     }
 
     @GetMapping

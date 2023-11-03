@@ -19,9 +19,12 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "app_user", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"email"})
-})
+@Table(
+        name = "app_user",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"email"})
+        }
+)
 
 public class AppUser {
 
@@ -43,7 +46,7 @@ public class AppUser {
     private AppUserRole appUserRole;
     private boolean locked;
 
-    @OneToMany
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
     private Set<Subscription> subscriptions;
 
 }

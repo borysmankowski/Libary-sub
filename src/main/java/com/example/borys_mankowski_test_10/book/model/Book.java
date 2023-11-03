@@ -15,11 +15,16 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "books",
+@Table(
+        name = "books",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"title"}),
+                @UniqueConstraint(columnNames = {"title"})
         },
-        indexes = {@Index(name = "added_date_index", columnList = "added_date")}
+        indexes = {
+                @Index(name = "added_date_index", columnList = "added_date"),
+                @Index(name = "category_index", columnList = "category"),
+                @Index(name = "author_index", columnList = "author")
+        }
 )
 
 public class Book {

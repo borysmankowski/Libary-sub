@@ -69,7 +69,8 @@ public class AppUserService {
 
         Optional<AppUser> appUserFoundByToken = appUserRepository.findAppUserByConfirmationToken(token);
 
-        AppUser appUser = appUserFoundByToken.get();
+        AppUser appUser = appUserFoundByToken.orElseThrow(()
+                -> new ResourceNotFoundException("User not found for the given token"));
 
         if (appUser.isEnabled()) {
             throw new DuplicateResourceException("User already enabled!");

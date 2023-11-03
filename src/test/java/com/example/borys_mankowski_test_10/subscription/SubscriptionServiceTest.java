@@ -75,20 +75,4 @@ class SubscriptionServiceTest {
         Assertions.assertEquals(expectedRentalDto.getClientId(), actualRentalDto.getClientId());
     }
 
-//    @Test
-//    void testCancelSubscriptionSuccess() {
-//        Long subscriptionId = 1L;
-//        Subscription subscription = new Subscription();
-//        subscription.setId(subscriptionId);
-//
-//        when(subscriptionRepository.findById(subscriptionId)).thenReturn(Optional.of(subscription));
-//
-//        ResponseEntity<String> response = subscriptionService.cancelSubscription(subscriptionId);
-//
-//        assertNotNull(response);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals("Subscription successfully canceled", response.getBody());
-//
-//        verify(subscriptionRepository, times(1)).deleteById(subscriptionId);
-//    }
 }

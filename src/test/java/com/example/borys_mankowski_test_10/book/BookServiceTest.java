@@ -44,17 +44,18 @@ class BookServiceTest {
         CreateBookCommand createBookCommand = new CreateBookCommand();
         createBookCommand.setTitle("Book One");
         createBookCommand.setAuthor("Author One");
+        createBookCommand.setCategory("Category");
 
         Book book = new Book();
-        book.setId(1L);
         book.setTitle("Book One");
         book.setAuthor("Author One");
+        book.setCategory("Category");
         book.setAvailable(true);
 
         BookDto expectedBookDto = new BookDto();
-        expectedBookDto.setId(1L);
         expectedBookDto.setTitle("Book One");
         expectedBookDto.setAuthor("Author One");
+        expectedBookDto.setCategory("Category");
         expectedBookDto.setAvailable(true);
 
         when(bookRepository.save(bookCaptor.capture())).thenReturn(book);
@@ -67,9 +68,9 @@ class BookServiceTest {
         Assertions.assertEquals("Book One", savedBook.getTitle());
         Assertions.assertEquals("Author One", savedBook.getAuthor());
 
-        Assertions.assertEquals(expectedBookDto.getId(), createdBookDto.getId());
         Assertions.assertEquals(expectedBookDto.getTitle(), createdBookDto.getTitle());
         Assertions.assertEquals(expectedBookDto.getAuthor(), createdBookDto.getAuthor());
+        Assertions.assertEquals(expectedBookDto.getCategory(), createdBookDto.getCategory());
         Assertions.assertEquals(expectedBookDto.isAvailable(), createdBookDto.isAvailable());
     }
 }

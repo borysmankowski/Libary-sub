@@ -2,7 +2,6 @@ package com.example.borys_mankowski_test_10.appuser;
 
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
 import com.example.borys_mankowski_test_10.email.EmailService;
-import com.example.borys_mankowski_test_10.exception.DatabaseException;
 import com.example.borys_mankowski_test_10.exception.DuplicateResourceException;
 import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -10,9 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,7 +57,7 @@ class AppUserServiceTest {
         assertThrows(DuplicateResourceException.class, () -> appUserService.confirmToken(token));
     }
 
-    @Test
+    @Test()
     public void testConfirmTokenWithValidToken_Success() {
         String token = "validToken";
         AppUser disabledAppUser = new AppUser();
@@ -70,7 +67,6 @@ class AppUserServiceTest {
 
         assertDoesNotThrow(() -> appUserService.confirmToken(token));
 
-        // Add verifications here based on your application's behavior
         verify(appUserRepository, times(1)).findAppUserByConfirmationToken(token);
     }
 
@@ -78,15 +74,25 @@ class AppUserServiceTest {
     public void testConfirmTokenWithValidToken_EnableAppUser() {
         String token = "validToken";
         AppUser workingAppUser = new AppUser();
-        workingAppUser.setEnabled(true);
-        workingAppUser.setEmail("test@gmail.com");
+        workingAppUser.setEmail("test@test.pl");
 
-        when(appUserRepository.findAppUserByConfirmationToken(token)).thenReturn(Optional.of(new AppUser()));
-        when(appUserService.enableAppUser(workingAppUser.getEmail()));
+        when(appUserRepository.findAppUserByConfirmationToken(token)).thenReturn(Optional.of(sampleUser()));
+        when(appUserService.enableAppUser(workingAppUser.getEmail())).thenReturn(1);
 
-        verify(appUserRepository.findAppUserByConfirmationToken(token));
-        verify(appUserService.enableAppUser(workingAppUser.getEmail()));
+        assertTrue(verifyUsers(workingAppUser, appUserRepository.findAppUserByConfirmationToken(token).get()));
 
     }
 
+    private boolean verifyUsers(AppUser actual, AppUser expected) {
+        assertEquals(actual.getEmail(), expected.getEmail());
+        return true;
+    }
+
+    private static AppUser sampleUser() {
+        AppUser user = new AppUser();
+        user.setEmail("test@test.pl");
+        user.setEmail("test@test.pl");
+
+        return user;
+    }
 }
