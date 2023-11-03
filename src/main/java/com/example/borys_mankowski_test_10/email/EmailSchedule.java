@@ -24,33 +24,27 @@ import java.util.concurrent.CompletableFuture;
 @AllArgsConstructor
 public class EmailSchedule {
 
-    private AppUserService appUserService;
-
-
-    private final SubscriptionService subscriptionService;
 
     private final EmailService emailService;
-
-    private final BookService bookService;
 
     private final BookRepository bookRepository;
 
     private final SubscriptionRepository subscriptionRepository;
 
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void sendScheduledEmailNotification() {
 
         int page = 0;
         int pageSize = 10;
 
-        List<Book> booksAddedToday = bookRepository.findBooksThatHaveBeenAddedToday();
+        List<Book> booksAddedToday = bookRepository.findAllByAddedDateToday();
         Map<String, List<Book>> subscribersMap = new HashMap<>();
 
         for (Book book : booksAddedToday) {
             Pageable pageable = PageRequest.of(page, pageSize);
             List<Subscription> subscriptions = subscriptionRepository.findSubscriptionsByAuthorOrCategory(
-                    book.getAuthor(), book.getCategory(),pageable);
+                    book.getAuthor(), book.getCategory(), pageable);
             for (Subscription subscription : subscriptions) {
 
                 subscribersMap
@@ -58,11 +52,9 @@ public class EmailSchedule {
                         .add(book);
             }
         }
-        CompletableFuture.runAsync(() -> {
-            for (Map.Entry<String, List<Book>> entry : subscribersMap.entrySet()) {
-                emailService.sendNotificationIfNewBooks(entry.getKey(), entry.getValue());
-            }
-        });
+        for (Map.Entry<String, List<Book>> entry : subscribersMap.entrySet()) {
+            emailService.sendNotificationIfNewBooks(entry.getKey(), entry.getValue());
+        }
     }
 }
 

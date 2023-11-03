@@ -1,12 +1,10 @@
 package com.example.borys_mankowski_test_10.email;
 
-import com.example.borys_mankowski_test_10.appuser.model.AppUser;
 import com.example.borys_mankowski_test_10.book.model.Book;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,34 +12,36 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    @Async
-    public void sendConfirmationEmail(String to, String subject, String token) throws MessagingException {
+    @Value("${library.base-url}")
+    private String baseUrl;
 
+    public EmailService(JavaMailSender mailSender, @Value("${library.base-url}") String baseUrl) {
+        this.mailSender = mailSender;
+        this.baseUrl = baseUrl;
+    }
+
+    public void sendConfirmationEmail(String to, String subject, String token) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+
 
         try {
             helper.setTo(to);
             helper.setSubject(subject);
 
-            String link = "http://localhost:8090/api/v1/user/confirm?token=" + token;
+            String link = baseUrl + "?token=" + token;
 
             String messageContent =
-
-                    " <p>Thank you for registering, please confirm your email address!</p>\n" +
-                            "    <p>Click the button to confirm:</p>" + link;
-
+                    "<p>Thank you for registering, please confirm your email address!</p>\n" +
+                            "<p>Click the button to confirm:</p>" + link;
 
             helper.setText(messageContent, true);
-
             mailSender.send(mimeMessage);
 
         } catch (MessagingException e) {

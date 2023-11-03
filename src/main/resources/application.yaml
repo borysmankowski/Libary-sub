@@ -31,5 +31,5 @@ spring:
     allow-bean-definition-overriding: false
 server:
   port: 8090
-libary:
-  application-url-authorisation: http://localhost:8090/api/v1/user/confirm?token
+library:
+  base-url: http://localhost:8090/api/v1/user/confirm
