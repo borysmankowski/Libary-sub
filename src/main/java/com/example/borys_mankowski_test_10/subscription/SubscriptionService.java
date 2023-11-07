@@ -3,7 +3,6 @@ package com.example.borys_mankowski_test_10.subscription;
 
 import com.example.borys_mankowski_test_10.appuser.AppUserRepository;
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
-import com.example.borys_mankowski_test_10.appuser.model.AppUserDto;
 import com.example.borys_mankowski_test_10.exception.DatabaseException;
 import com.example.borys_mankowski_test_10.exception.DuplicateResourceException;
 import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
@@ -11,18 +10,13 @@ import com.example.borys_mankowski_test_10.subscription.model.CreateSubscription
 import com.example.borys_mankowski_test_10.subscription.model.Subscription;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionDto;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionMapper;
-import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ConcurrentModificationException;
-import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor

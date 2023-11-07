@@ -92,7 +92,7 @@ public class AppUserService {
     }
 
     public Optional<AppUser> findAppUserBySubscriptionsId(Long id) {
-        return appUserRepository.findAppUserBySubscriptionsId(id);
+        return appUserRepository.findBySubscriptionsId(id);
     }
 
     public Page<AppUserDto> getAllUsers(Pageable pageable) {
