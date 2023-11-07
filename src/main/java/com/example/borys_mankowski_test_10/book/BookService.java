@@ -9,11 +9,13 @@ import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -23,7 +25,7 @@ public class BookService {
 
     private BookMapper bookMapper;
 
-    private ApplicationEventPublisher notificationPublisher;
+
 
 
 
@@ -54,18 +56,27 @@ public class BookService {
 
 
         try {
-            bookRepository.save(newBook);
+           bookRepository.save(newBook);
 
-
-        } catch (DuplicateResourceException exception) {
+        } catch (DataIntegrityViolationException ex) {
             throw new DuplicateResourceException("Duplicate book for title " + createBookCommand.getTitle());
 
         } catch (OptimisticLockException ole) {
             throw new ConcurrentModificationException("The book was modified by another transaction. Please try again.");
         }
-        notificationPublisher.publishEvent(newBook);
+
         return bookMapper.mapToDto(newBook);
     }
+
+    public List<BookDto> findBooksByAuthor(String author){
+        List<Book> books = bookRepository.findBookByAuthorAddedToday(author);
+        return books.stream().map(bookMapper::mapToDto).collect(Collectors.toList());
+    }
+    public List<BookDto> findBooksByCategory(String category){
+        List<Book> books = bookRepository.findBookByCategoryAddedToday(category);
+        return books.stream().map(bookMapper::mapToDto).collect(Collectors.toList());
+    }
+
 
 }
 

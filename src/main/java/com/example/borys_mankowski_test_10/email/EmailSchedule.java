@@ -25,36 +25,72 @@ import java.util.concurrent.CompletableFuture;
 public class EmailSchedule {
 
 
-    private final EmailService emailService;
+    private EmailService emailService;
 
-    private final BookRepository bookRepository;
+//    private BookRepository bookRepository;
+//
+//    private SubscriptionRepository subscriptionRepository;
 
-    private final SubscriptionRepository subscriptionRepository;
+    private SubscriptionService subscriptionService;
+
+    private BookService bookService;
+
+    private AppUserService appUserService;
 
 
-    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "0 0 0 * * *")
+//    public void sendScheduledEmailNotification() {
+//
+//        int page = 0;
+//        int pageSize = 1000;
+//
+//        List<Book> booksAddedToday = bookRepository.findAllByAddedDateToday();
+//        Map<String, List<Book>> subscribersMap = new HashMap<>();
+//
+//        for (Book book : booksAddedToday) {
+//            Pageable pageable = PageRequest.of(page, pageSize);
+//            List<Subscription> subscriptions = subscriptionRepository.findSubscriptionsByAuthorOrCategory(
+//                    book.getAuthor(), book.getCategory(), pageable);
+//            for (Subscription subscription : subscriptions) {
+//
+//                subscribersMap
+//                        .computeIfAbsent(subscription.getAppUser().getEmail(), k -> new ArrayList<>())
+//                        .add(book);
+//            }
+//        }
+//        for (Map.Entry<String, List<Book>> entry : subscribersMap.entrySet()) {
+//            emailService.sendNotificationIfNewBooks(entry.getKey(), entry.getValue());
+//        }
+//    }
+
+    @Scheduled(cron = "1 * * * * *")
     public void sendScheduledEmailNotification() {
 
         int page = 0;
-        int pageSize = 10;
+        int pageSize = 1000;
 
-        List<Book> booksAddedToday = bookRepository.findAllByAddedDateToday();
-        Map<String, List<Book>> subscribersMap = new HashMap<>();
+        Page<SubscriptionDto> subscriptionDtoPage;
 
-        for (Book book : booksAddedToday) {
-            Pageable pageable = PageRequest.of(page, pageSize);
-            List<Subscription> subscriptions = subscriptionRepository.findSubscriptionsByAuthorOrCategory(
-                    book.getAuthor(), book.getCategory(), pageable);
-            for (Subscription subscription : subscriptions) {
+        do{
+            Pageable pageable = PageRequest.of(page,pageSize);
+            subscriptionDtoPage = subscriptionService.getAllSubscriptions(pageable);
 
-                subscribersMap
-                        .computeIfAbsent(subscription.getAppUser().getEmail(), k -> new ArrayList<>())
-                        .add(book);
+            for (SubscriptionDto subscriptionDto : subscriptionDtoPage.getContent()){
+                List<BookDto> newBooks;
+                if(subscriptionDto.getBookAuthor() != null){
+                    newBooks = bookService.findBooksByAuthor(subscriptionDto.getBookAuthor());
+                } else if (subscriptionDto.getBookCategory() != null) {
+                    newBooks = bookService.findBooksByCategory(subscriptionDto.getBookCategory());
+                } else {
+                    continue;
+                }
+                if (!newBooks.isEmpty()){
+                    Optional<AppUser> appUser = appUserService.findAppUserBySubscriptionsId(subscriptionDto.getId());
+                    emailService.sendNotificationIfNewBooks(appUser.get().getEmail(),newBooks);
+                }
             }
-        }
-        for (Map.Entry<String, List<Book>> entry : subscribersMap.entrySet()) {
-            emailService.sendNotificationIfNewBooks(entry.getKey(), entry.getValue());
-        }
+            page++;
+        }while (subscriptionDtoPage.hasNext());
     }
 }
 

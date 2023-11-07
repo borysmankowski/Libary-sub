@@ -1,9 +1,9 @@
 package com.example.borys_mankowski_test_10.email;
 
 import com.example.borys_mankowski_test_10.book.model.Book;
+import com.example.borys_mankowski_test_10.book.model.BookDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -60,12 +60,12 @@ public class EmailService {
     }
 
     @Async
-    public void sendNotificationIfNewBooks(String to, List<Book> books) {
+    public void sendNotificationIfNewBooks(String to, List<BookDto> books) {
 
         String subject = "New books added to the book store!";
 
         StringBuilder textBuilder = new StringBuilder("New books added to the store, take a look at the new positions below! :\n");
-        for (Book book : books) {
+        for (BookDto book : books) {
             textBuilder.append("Title: ").append(book.getTitle())
                     .append(" Category: ").append(book.getCategory())
                     .append("\n\n");
