@@ -29,8 +29,7 @@ public class SubscriptionController {
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<SubscriptionMessage> deleteSubscription(@PathVariable Long subscriptionId) {
         subscriptionService.cancelSubscription(subscriptionId);
-        SubscriptionMessage message = new SubscriptionMessage("Subscription successfully canceled");
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(new SubscriptionMessage("Subscription successfully canceled"));
     }
 
     @GetMapping

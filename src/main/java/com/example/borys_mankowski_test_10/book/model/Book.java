@@ -44,7 +44,6 @@ public class Book {
 
     private boolean available;
 
-
     @Version
     private Integer version;
 }

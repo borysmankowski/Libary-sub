@@ -45,25 +45,21 @@ public class BookService {
         }
 
 
-        if (bookRepository.existsByTitle(createBookCommand.getTitle())) {
-            throw new DuplicateResourceException("Book with title '" + createBookCommand.getTitle() + "' already exists");
-        }
-
         Book newBook;
         newBook = bookMapper.fromDto(createBookCommand);
         newBook.setAvailable(true);
         newBook.setAddedDate(LocalDate.now());
 
 
-        try {
+//        try {
            bookRepository.save(newBook);
 
-        } catch (DataIntegrityViolationException ex) {
-            throw new DuplicateResourceException("Duplicate book for title " + createBookCommand.getTitle());
-
-        } catch (OptimisticLockException ole) {
-            throw new ConcurrentModificationException("The book was modified by another transaction. Please try again.");
-        }
+//        } catch (DuplicateResourceException exception) {
+//            throw new DuplicateResourceException("Duplicate book for title " + createBookCommand.getTitle());
+//
+//        } catch (OptimisticLockException ole) {
+//            throw new ConcurrentModificationException("The book was modified by another transaction. Please try again.");
+//        }
 
         return bookMapper.mapToDto(newBook);
     }
