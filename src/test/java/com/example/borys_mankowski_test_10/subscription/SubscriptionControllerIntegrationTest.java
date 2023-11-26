@@ -39,12 +39,12 @@ public class SubscriptionControllerIntegrationTest {
     @Test
     public void testCreateSubscription() throws Exception {
         CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand();
-        createSubscriptionCommand.setClientId(1L);
+        createSubscriptionCommand.setAppUserId(1L);
         createSubscriptionCommand.setAuthor("Author1");
 
         SubscriptionDto subscriptionDto = new SubscriptionDto();
         subscriptionDto.setId(1L);
-        subscriptionDto.setClientId(1L);
+        subscriptionDto.setAppUserId(1L);
         subscriptionDto.setSubscribed(true);
 
         when(subscriptionService.createSubscription(any(CreateSubscriptionCommand.class))).thenReturn(subscriptionDto);

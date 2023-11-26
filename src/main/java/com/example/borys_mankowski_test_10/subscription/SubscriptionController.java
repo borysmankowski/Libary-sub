@@ -3,6 +3,7 @@ package com.example.borys_mankowski_test_10.subscription;
 import com.example.borys_mankowski_test_10.subscription.model.CreateSubscriptionCommand;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionDto;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionMessage;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,12 +21,12 @@ public class SubscriptionController {
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<SubscriptionDto> createSubscription(@RequestBody CreateSubscriptionCommand createSubscriptionCommand) {
+    public ResponseEntity<SubscriptionDto> createSubscription(@RequestBody @Valid CreateSubscriptionCommand createSubscriptionCommand) {
         SubscriptionDto createdSubscription = subscriptionService.createSubscription(createSubscriptionCommand);
         return new ResponseEntity<>(createdSubscription, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{subscriptionId}/cancel")
+    @DeleteMapping("{subscriptionId}")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<SubscriptionMessage> deleteSubscription(@PathVariable Long subscriptionId) {
         subscriptionService.cancelSubscription(subscriptionId);

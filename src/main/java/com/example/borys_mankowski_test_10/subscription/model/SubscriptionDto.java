@@ -13,7 +13,7 @@ import lombok.Setter;
 public class SubscriptionDto {
 
     private Long id;
-    private Long clientId;
+    private Long appUserId;
     private String bookCategory;
     private String bookAuthor;
     private boolean subscribed;

@@ -20,7 +20,6 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @PostMapping
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public AppUserDto registerUser(@RequestBody CreateAppUserCommand createAppUserCommand) {
         return appUserService.registerAppUser(createAppUserCommand);
     }

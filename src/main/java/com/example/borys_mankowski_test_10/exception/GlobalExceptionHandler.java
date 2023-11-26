@@ -32,6 +32,18 @@ public class GlobalExceptionHandler {
         return createExceptionDto(exception.getMessage());
     }
 
+    @ExceptionHandler(EmailException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ExceptionDto handleEmailException(EmailException exception) {
+        return createExceptionDto(exception.getMessage());
+    }
+
+    @ExceptionHandler(UserEnablingException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionDto handleUserEnablingException(UserEnablingException exception) {
+        return createExceptionDto(exception.getMessage());
+    }
+
     private ExceptionDto createExceptionDto(String message) {
         return new ExceptionDto(message);
     }

@@ -11,8 +11,8 @@ import lombok.*;
 @Builder
 public class CreateSubscriptionCommand {
 
-    @NotNull(message = "Client Id cannot be null! ")
-    private Long clientId;
+    @NotNull(message = "App User Id cannot be null! ")
+    private Long appUserId;
 
     private String author;
 
