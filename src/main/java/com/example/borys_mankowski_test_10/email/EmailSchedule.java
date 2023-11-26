@@ -2,14 +2,9 @@ package com.example.borys_mankowski_test_10.email;
 
 import com.example.borys_mankowski_test_10.appuser.AppUserService;
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
-import com.example.borys_mankowski_test_10.book.BookRepository;
 import com.example.borys_mankowski_test_10.book.BookService;
-import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.book.model.BookDto;
-import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
-import com.example.borys_mankowski_test_10.subscription.SubscriptionRepository;
 import com.example.borys_mankowski_test_10.subscription.SubscriptionService;
-import com.example.borys_mankowski_test_10.subscription.model.Subscription;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,8 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
 
 @Component
 @AllArgsConstructor
@@ -64,7 +58,7 @@ public class EmailSchedule {
 //        }
 //    }
 
-    @Scheduled(cron = "1 * * * * *")
+    @Scheduled(cron = "${scheduled.email.notification.cron}")
     public void sendScheduledEmailNotification() { // TODO: 26/11/2023 check this method and see it there will be only 1 email sent if there are subs for authors as well as categories
 
         int page = 0;
@@ -72,26 +66,26 @@ public class EmailSchedule {
 
         Page<SubscriptionDto> subscriptionDtoPage;
 
-        do{
-            Pageable pageable = PageRequest.of(page,pageSize);
+        do {
+            Pageable pageable = PageRequest.of(page, pageSize);
             subscriptionDtoPage = subscriptionService.getAllSubscriptions(pageable);
 
-            for (SubscriptionDto subscriptionDto : subscriptionDtoPage.getContent()){
+            for (SubscriptionDto subscriptionDto : subscriptionDtoPage.getContent()) {
                 List<BookDto> newBooks;
-                if(subscriptionDto.getBookAuthor() != null){
+                if (subscriptionDto.getBookAuthor() != null) {
                     newBooks = bookService.findBooksByAuthor(subscriptionDto.getBookAuthor());
                 } else if (subscriptionDto.getBookCategory() != null) {
                     newBooks = bookService.findBooksByCategory(subscriptionDto.getBookCategory());
                 } else {
                     continue;
                 }
-                if (!newBooks.isEmpty()){
-                   AppUser appUser = appUserService.findAppUserBySubscriptionsId(subscriptionDto.getId());
-                    emailService.sendNotificationIfNewBooks(appUser.getEmail(),newBooks);
+                if (!newBooks.isEmpty()) {
+                    AppUser appUser = appUserService.findAppUserBySubscriptionsId(subscriptionDto.getId());
+                    emailService.sendNotificationIfNewBooks(appUser.getEmail(), newBooks);
                 }
             }
             page++;
-        }while (subscriptionDtoPage.hasNext());
+        } while (subscriptionDtoPage.hasNext());
     }
 }
 
