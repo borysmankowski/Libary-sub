@@ -3,7 +3,6 @@ package com.example.borys_mankowski_test_10.subscription;
 
 import com.example.borys_mankowski_test_10.appuser.AppUserRepository;
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
-import com.example.borys_mankowski_test_10.exception.DatabaseException;
 import com.example.borys_mankowski_test_10.exception.DuplicateResourceException;
 import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
 import com.example.borys_mankowski_test_10.exception.UserEnablingException;
@@ -13,7 +12,6 @@ import com.example.borys_mankowski_test_10.subscription.model.SubscriptionDto;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,15 +51,15 @@ public class SubscriptionService {
 
         Subscription subscriptionNew;
 
-        subscriptionNew = subscriptionMapper.fromDto(createSubscriptionCommand, appUser); // TODO: 26/11/2023 change the method so it will only take the command in rather than the app user too.
+        subscriptionNew = subscriptionMapper.fromDto(createSubscriptionCommand);
 
         appUser.addSubscription(subscriptionNew);
 
         subscriptionNew.setSubscribed(true);
 
 
-            subscriptionNew = subscriptionRepository.save(subscriptionNew);
-            return subscriptionMapper.mapToDto(subscriptionNew);
+        subscriptionNew = subscriptionRepository.save(subscriptionNew);
+        return subscriptionMapper.mapToDto(subscriptionNew);
 
     }
 

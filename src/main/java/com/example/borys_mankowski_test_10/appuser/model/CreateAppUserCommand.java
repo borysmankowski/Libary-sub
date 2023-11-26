@@ -20,7 +20,6 @@ public class CreateAppUserCommand {
     @NotBlank(message = "LastName cannot be blank")
     private String lastName;
 
-    @Email
     @NotBlank(message = "Email cannot be blank")
     private String email;
 
