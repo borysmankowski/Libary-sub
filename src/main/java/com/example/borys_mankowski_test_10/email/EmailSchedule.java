@@ -6,6 +6,7 @@ import com.example.borys_mankowski_test_10.book.BookRepository;
 import com.example.borys_mankowski_test_10.book.BookService;
 import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.book.model.BookDto;
+import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
 import com.example.borys_mankowski_test_10.subscription.SubscriptionRepository;
 import com.example.borys_mankowski_test_10.subscription.SubscriptionService;
 import com.example.borys_mankowski_test_10.subscription.model.Subscription;
@@ -85,8 +86,8 @@ public class EmailSchedule {
                     continue;
                 }
                 if (!newBooks.isEmpty()){
-                    Optional<AppUser> appUser = appUserService.findAppUserBySubscriptionsId(subscriptionDto.getId());
-                    emailService.sendNotificationIfNewBooks(appUser.get().getEmail(),newBooks); // TODO: 26/11/2023 check the optional usage here
+                   AppUser appUser = appUserService.findAppUserBySubscriptionsId(subscriptionDto.getId());
+                    emailService.sendNotificationIfNewBooks(appUser.getEmail(),newBooks);
                 }
             }
             page++;

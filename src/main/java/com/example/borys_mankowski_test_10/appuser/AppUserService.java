@@ -30,10 +30,6 @@ public class AppUserService {
 
     public AppUserDto registerAppUser(CreateAppUserCommand createAppUserCommand) {
 
-        if (appUserRepository.existsByEmail(createAppUserCommand.getEmail())) {
-            throw new DuplicateResourceException("Email is already in use! Use a different email to register");
-        }  // TODO: 26/11/2023 race condition - find a different way to do it without race condition
-
         String token = UUID.randomUUID().toString();
         AppUser appUser = appUserMapper.fromDto(createAppUserCommand);
         appUser.setConfirmationToken(token);
@@ -78,9 +74,9 @@ public class AppUserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<AppUser> findAppUserBySubscriptionsId(Long id) {
-        return Optional.ofNullable(appUserRepository.findBySubscriptionsId(id).orElseThrow(()
-                -> new ResourceNotFoundException("User not found for the given subscription id")));
+    public AppUser findAppUserBySubscriptionsId(Long id) {
+        return appUserRepository.findBySubscriptionsId(id).orElseThrow(()
+                -> new ResourceNotFoundException("User not found for the given subscription id"));
     }
 
     @Transactional(readOnly = true)
