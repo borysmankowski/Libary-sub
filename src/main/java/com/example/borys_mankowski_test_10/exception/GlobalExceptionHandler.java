@@ -1,6 +1,7 @@
 package com.example.borys_mankowski_test_10.exception;
 
-import jakarta.validation.ConstraintViolationException;
+
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,6 +45,23 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ExceptionDto handleUserEnablingException(UserEnablingException exception) {
         return createExceptionDto(exception.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionDto handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+        Throwable rootCause = exception.getMostSpecificCause();
+        if (rootCause instanceof ConstraintViolationException) {
+            ConstraintViolationException constraintViolationException = (ConstraintViolationException) rootCause;
+
+            // Check if the violated constraint is related to the 'email' field
+            if (constraintViolationException.getCause().getMessage().contains("uk_email")) {
+                return new ExceptionDto("User with the given email already exists.");
+            }
+
+            // Add more conditions for other unique constraints in your application
+        }
+        return new ExceptionDto("A database error occurred. Please try again later.");
     }
 
     private ExceptionDto createExceptionDto(String message) {
