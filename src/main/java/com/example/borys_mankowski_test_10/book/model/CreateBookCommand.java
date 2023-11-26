@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 public class CreateBookCommand {
 
     @NotBlank(message = "Title cannot be blank")
-
     private String title;
 
     @NotBlank(message = "Author cannot be blank")

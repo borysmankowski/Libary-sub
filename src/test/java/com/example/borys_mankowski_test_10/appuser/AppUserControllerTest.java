@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AppUserControllerTest {
 
+    // TODO: 26/11/2023 redo all of the tests & make new ones if needed
+
     @Test
     void registerUser() {
 

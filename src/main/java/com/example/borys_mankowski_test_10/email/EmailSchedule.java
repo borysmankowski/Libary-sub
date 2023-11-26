@@ -64,7 +64,7 @@ public class EmailSchedule {
 //    }
 
     @Scheduled(cron = "1 * * * * *")
-    public void sendScheduledEmailNotification() {
+    public void sendScheduledEmailNotification() { // TODO: 26/11/2023 check this method and see it there will be only 1 email sent if there are subs for authors as well as categories
 
         int page = 0;
         int pageSize = 1000;
@@ -86,7 +86,7 @@ public class EmailSchedule {
                 }
                 if (!newBooks.isEmpty()){
                     Optional<AppUser> appUser = appUserService.findAppUserBySubscriptionsId(subscriptionDto.getId());
-                    emailService.sendNotificationIfNewBooks(appUser.get().getEmail(),newBooks);
+                    emailService.sendNotificationIfNewBooks(appUser.get().getEmail(),newBooks); // TODO: 26/11/2023 check the optional usage here
                 }
             }
             page++;

@@ -13,16 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class SubscriptionServiceTest {
@@ -41,7 +37,7 @@ class SubscriptionServiceTest {
     @Test
     void testCreateSubscription() {
         CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand();
-        createSubscriptionCommand.setClientId(1L);
+        createSubscriptionCommand.setAppUserId(1L);
         createSubscriptionCommand.setCategory("Comedy");
         createSubscriptionCommand.setAuthor("Tomasz");
 
@@ -64,7 +60,7 @@ class SubscriptionServiceTest {
 
         SubscriptionDto expectedRentalDto = new SubscriptionDto();
         expectedRentalDto.setId(subscription.getId());
-        expectedRentalDto.setClientId(subscription.getAppUser().getId());
+        expectedRentalDto.setAppUserId(subscription.getAppUser().getId());
 
         Mockito.when(appUserRepository.findById(1L)).thenReturn(Optional.of(appUser));
         Mockito.when(subscriptionRepository.save(Mockito.any(Subscription.class))).thenReturn(subscription);
@@ -72,7 +68,7 @@ class SubscriptionServiceTest {
         SubscriptionDto actualRentalDto = subscriptionService.createSubscription(createSubscriptionCommand);
 
         Assertions.assertEquals(expectedRentalDto.getId(), actualRentalDto.getId());
-        Assertions.assertEquals(expectedRentalDto.getClientId(), actualRentalDto.getClientId());
+        Assertions.assertEquals(expectedRentalDto.getAppUserId(), actualRentalDto.getAppUserId());
     }
 
 }

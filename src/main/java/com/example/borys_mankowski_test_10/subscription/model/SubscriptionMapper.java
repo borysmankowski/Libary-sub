@@ -14,12 +14,13 @@ public class SubscriptionMapper {
         dto.setId(subscription.getId());
         dto.setBookAuthor(subscription.getBookAuthor());
         dto.setBookCategory(subscription.getBookCategory());
-        dto.setClientId(subscription.getAppUser().getId());
+        dto.setAppUserId(subscription.getAppUser().getId());
         dto.setSubscribed(subscription.isSubscribed());
         return dto;
     }
 
     public Subscription fromDto(CreateSubscriptionCommand command, AppUser appUser) {
+        // TODO: 26/11/2023 change the mapper for it to take only the command in.
         Subscription subscription = new Subscription();
         subscription.setAppUser(appUser);
         subscription.setBookAuthor(command.getAuthor());
