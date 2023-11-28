@@ -25,7 +25,4 @@ public class CreateAppUserCommand {
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private AppUserRole appUserRole;
-
 }

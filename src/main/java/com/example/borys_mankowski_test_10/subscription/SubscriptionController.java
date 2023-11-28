@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,9 +36,8 @@ public class SubscriptionController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SubscriptionDto>> getAllSubscriptions(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<SubscriptionDto> subscriptions = subscriptionService.getAllSubscriptions(pageRequest);
+    public ResponseEntity<Page<SubscriptionDto>> getAllSubscriptions(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+        Page<SubscriptionDto> subscriptions = subscriptionService.getAllSubscriptions(pageable);
         return ResponseEntity.ok(subscriptions);
     }
 }

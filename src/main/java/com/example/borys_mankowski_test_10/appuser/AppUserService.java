@@ -33,7 +33,6 @@ public class AppUserService {
         String token = UUID.randomUUID().toString();
         AppUser appUser = appUserMapper.fromDto(createAppUserCommand);
         appUser.setConfirmationToken(token);
-        appUser.setAppUserRole(AppUserRole.CLIENT);
         appUserRepository.save(appUser);
 
         try {
