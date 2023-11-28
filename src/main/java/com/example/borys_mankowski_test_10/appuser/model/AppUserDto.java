@@ -17,7 +17,5 @@ public class AppUserDto {
     private String lastName;
     private String email;
     private String password;
-    @Enumerated(EnumType.STRING)
-    private AppUserRole appUserRole;
     private boolean enabled;
 }

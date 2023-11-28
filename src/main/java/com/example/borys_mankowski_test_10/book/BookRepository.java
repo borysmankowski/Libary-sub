@@ -19,5 +19,4 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT b FROM Book b WHERE b.addedDate = CURRENT_DATE")
     List<Book> findBookByCategoryAddedToday(String category);
 
-
 }

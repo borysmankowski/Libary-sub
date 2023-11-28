@@ -2,6 +2,8 @@ package com.example.borys_mankowski_test_10.appuser.model;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class AppUserMapper {
 
@@ -11,7 +13,6 @@ public class AppUserMapper {
         appUser.setLastName(command.getLastName());
         appUser.setEmail(command.getEmail());
         appUser.setPassword(command.getPassword());
-        appUser.setAppUserRole(command.getAppUserRole());
         return appUser;
     }
 
@@ -22,7 +23,6 @@ public class AppUserMapper {
         dto.setLastName(appUser.getLastName());
         dto.setEmail(appUser.getEmail());
         dto.setPassword(appUser.getPassword());
-        dto.setAppUserRole(appUser.getAppUserRole());
         dto.setEnabled(appUser.isEnabled());
         return dto;
     }

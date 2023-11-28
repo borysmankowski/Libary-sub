@@ -1,12 +1,9 @@
 package com.example.borys_mankowski_test_10.appuser.model;
 
-import com.example.borys_mankowski_test_10.appuser.AppUserRole;
 import com.example.borys_mankowski_test_10.subscription.model.Subscription;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,7 +34,7 @@ public class AppUser {
     private Long id;
     private String firstName;
     private String lastName;
-    @Email // TODO: 26/11/2023 check if there is an exception which will be thrown if the email is repeated
+    @Email
     @Column(unique = true)
     private String email;
 
@@ -45,9 +42,6 @@ public class AppUser {
     private String password;
 
     private boolean enabled;
-
-    @Enumerated(EnumType.STRING)
-    private AppUserRole appUserRole;
 
     @Version
     private Long version;

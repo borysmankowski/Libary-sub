@@ -20,6 +20,7 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BookDto> createBook(@Valid @RequestBody CreateBookCommand createBookCommand) {
         BookDto createdBook = bookService.createBook(createBookCommand);
         return new ResponseEntity<>(createdBook, HttpStatus.CREATED);

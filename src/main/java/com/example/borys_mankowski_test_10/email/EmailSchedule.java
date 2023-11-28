@@ -59,7 +59,7 @@ public class EmailSchedule {
 //    }
 
     @Scheduled(cron = "${scheduled.email.notification.cron}")
-    public void sendScheduledEmailNotification() { // TODO: 26/11/2023 check this method and see it there will be only 1 email sent if there are subs for authors as well as categories
+    public void sendScheduledEmailNotification() {
 
         int page = 0;
         int pageSize = 1000;

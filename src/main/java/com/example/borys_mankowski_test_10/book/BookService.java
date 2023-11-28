@@ -6,6 +6,7 @@ import com.example.borys_mankowski_test_10.book.model.BookMapper;
 import com.example.borys_mankowski_test_10.book.model.CreateBookCommand;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
