@@ -22,14 +22,14 @@ public class SubscriptionController {
     private SubscriptionService subscriptionService;
 
     @PostMapping
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<SubscriptionDto> createSubscription(@RequestBody @Valid CreateSubscriptionCommand createSubscriptionCommand) {
         SubscriptionDto createdSubscription = subscriptionService.createSubscription(createSubscriptionCommand);
         return new ResponseEntity<>(createdSubscription, HttpStatus.CREATED);
     }
 
     @DeleteMapping("{subscriptionId}")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<SubscriptionMessage> deleteSubscription(@PathVariable Long subscriptionId) {
         subscriptionService.cancelSubscription(subscriptionId);
         return ResponseEntity.ok(new SubscriptionMessage("Subscription successfully canceled"));

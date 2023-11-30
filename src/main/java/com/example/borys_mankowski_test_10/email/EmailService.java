@@ -59,12 +59,12 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendNotificationIfNewBooks(String to, List<BookDto> books) {
+    public void sendNotificationIfNewBooks(String to, List<Book> books) {
 
         String subject = "New books added to the book store!";
 
         StringBuilder textBuilder = new StringBuilder("New books added to the store, take a look at the new positions below! :\n");
-        for (BookDto book : books) {
+        for (Book book : books) {
             textBuilder.append("Title: ").append(book.getTitle())
                     .append(" Category: ").append(book.getCategory())
                     .append("\n\n");

@@ -31,15 +31,15 @@ public class BookService {
         return bookMapper.mapToDto(bookRepository.save(newBook));
     }
 
-    public List<BookDto> findBooksByAuthor(String author) {
-        List<Book> books = bookRepository.findBookByAuthorAddedToday(author);
-        return books.stream().map(bookMapper::mapToDto).collect(Collectors.toList());
-    }
-
-    public List<BookDto> findBooksByCategory(String category) {
-        List<Book> books = bookRepository.findBookByCategoryAddedToday(category);
-        return books.stream().map(bookMapper::mapToDto).collect(Collectors.toList());
-    }
+//    public List<BookDto> findBooksByAuthor(String author) {
+//        List<Book> books = bookRepository.findBookByAuthorAddedToday(author);
+//        return books.stream().map(bookMapper::mapToDto).collect(Collectors.toList());
+//    }
+//
+//    public List<BookDto> findBooksByCategory(String category) {
+//        List<Book> books = bookRepository.findBookByCategoryAddedToday(category);
+//        return books.stream().map(bookMapper::mapToDto).collect(Collectors.toList());
+//    }
 
 
 }
