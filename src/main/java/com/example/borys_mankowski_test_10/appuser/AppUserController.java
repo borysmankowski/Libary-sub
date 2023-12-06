@@ -23,8 +23,9 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @PostMapping
-    public AppUserDto registerUser(@RequestBody CreateAppUserCommand createAppUserCommand) {
-        return appUserService.registerAppUser(createAppUserCommand);
+    public ResponseEntity< AppUserDto> registerUser(@RequestBody CreateAppUserCommand createAppUserCommand) {
+       AppUserDto createdUser = appUserService.registerAppUser(createAppUserCommand);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @GetMapping("confirm")
