@@ -31,12 +31,6 @@ public class EmailSchedule {
 
     private SubscriptionRepository subscriptionRepository;
 
-    private SubscriptionService subscriptionService;
-
-    private BookService bookService;
-
-    private AppUserService appUserService;
-
     @Scheduled(cron = "${scheduled.email.notification.cron}")
     public void sendScheduledEmailNotification() {
         LocalDate todayDateTime = LocalDate.now();
@@ -87,64 +81,6 @@ public class EmailSchedule {
         }
         return matchedBooks;
     }
-
-
-//    @Scheduled(cron = "0 0 0 * * *")
-//    public void sendScheduledEmailNotification() {
-//
-//        LocalDate today = LocalDate.now();
-//        final int pageSize = 10000;
-//        Page<Book> pageResult;
-//        Pageable pageable = PageRequest.of(0, pageSize);
-//
-//        List<Book> booksAddedToday = bookRepository.findAllByAddedDateToday();
-//        Map<String, List<Book>> subscribersMap = new HashMap<>();
-//
-//        for (Book book : booksAddedToday) {
-//            Pageable pageable = PageRequest.of(page, pageSize);
-//            List<Subscription> subscriptions = subscriptionRepository.findSubscriptionsByAuthorOrCategory(
-//                    book.getAuthor(), book.getCategory(), pageable);
-//            for (Subscription subscription : subscriptions) {
-//
-//                subscribersMap
-//                        .computeIfAbsent(subscription.getAppUser().getEmail(), k -> new ArrayList<>())
-//                        .add(book);
-//            }
-//        }
-//        for (Map.Entry<String, List<Book>> entry : subscribersMap.entrySet()) {
-//            emailService.sendNotificationIfNewBooks(entry.getKey(), entry.getValue());
-//        }
-//    }
-
-//    @Scheduled(cron = "${scheduled.email.notification.cron}")
-//    public void sendScheduledEmailNotification() {
-//
-//        int page = 0;
-//        int pageSize = 1000;
-//
-//        Page<SubscriptionDto> subscriptionDtoPage;
-//
-//        do {
-//            Pageable pageable = PageRequest.of(page, pageSize);
-//            subscriptionDtoPage = subscriptionService.getAllSubscriptions(pageable);
-//
-//            for (SubscriptionDto subscriptionDto : subscriptionDtoPage.getContent()) {
-//                List<BookDto> newBooks;
-//                if (subscriptionDto.getBookAuthor() != null) {
-//                    newBooks = bookService.findBooksByAuthor(subscriptionDto.getBookAuthor());
-//                } else if (subscriptionDto.getBookCategory() != null) {
-//                    newBooks = bookService.findBooksByCategory(subscriptionDto.getBookCategory());
-//                } else {
-//                    continue;
-//                }
-//                if (!newBooks.isEmpty()) {
-//                    AppUser appUser = appUserService.findAppUserBySubscriptionsId(subscriptionDto.getId());
-//                    emailService.sendNotificationIfNewBooks(appUser.getEmail(), newBooks);
-//                }
-//            }
-//            page++;
-//        } while (subscriptionDtoPage.hasNext());
-//    }
 }
 
 

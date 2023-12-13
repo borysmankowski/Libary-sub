@@ -1,14 +1,12 @@
 package com.example.borys_mankowski_test_10.email;
 
 import com.example.borys_mankowski_test_10.book.model.Book;
-import com.example.borys_mankowski_test_10.book.model.BookDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,11 +35,11 @@ public class EmailService {
 
             String link = baseUrl + "?token=" + token;
 
-            String messageContent =
-                    "<p>Thank you for registering, please confirm your email address!</p>\n" +
-                            "<p>Click the button to confirm:</p>" + link;
+            StringBuilder messageContent = new StringBuilder("<p>Thank you for registering, please confirm your email address!</p>\n" +
+                    "<p>Click the button to confirm:</p>" + link);
 
-            helper.setText(messageContent, true);
+
+            helper.setText(String.valueOf(messageContent), true);
             mailSender.send(mimeMessage);
 
         } catch (MessagingException e) {
@@ -66,6 +64,7 @@ public class EmailService {
         StringBuilder textBuilder = new StringBuilder("New books added to the store, take a look at the new positions below! :\n");
         for (Book book : books) {
             textBuilder.append("Title: ").append(book.getTitle())
+                    .append(" Author: ").append(book.getAuthor())
                     .append(" Category: ").append(book.getCategory())
                     .append("\n\n");
 

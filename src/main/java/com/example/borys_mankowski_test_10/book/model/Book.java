@@ -42,8 +42,6 @@ public class Book {
     @Column(name = "added_date")
     private LocalDate addedDate;
 
-    private boolean available;
-
     @Version
     private Integer version;
 }

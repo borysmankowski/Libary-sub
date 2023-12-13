@@ -54,4 +54,9 @@ public class AppUser {
         subscription.setAppUser(this);
     }
 
+    public void removeSubscription(Subscription subscription) {
+        subscriptions.remove(subscription);
+        subscription.setAppUser(null);
+    }
+
 }
