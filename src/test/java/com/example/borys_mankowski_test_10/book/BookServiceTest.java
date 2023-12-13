@@ -8,27 +8,31 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class BookServiceTest {
 
-    @MockBean
+    @Mock
     private BookRepository bookRepository;
 
-    @Autowired
+    @InjectMocks
     private BookService bookService;
-
-    @Autowired
+    @Mock
     private BookMapper bookMapper;
 
-    @Captor
-    private ArgumentCaptor<Book> bookCaptor;
+
 
     @Test
     void testCreateBook() {
@@ -47,18 +51,52 @@ class BookServiceTest {
         expectedBookDto.setAuthor("Author One");
         expectedBookDto.setCategory("Category");
 
-        when(bookRepository.save(bookCaptor.capture())).thenReturn(book);
+        when(bookMapper.fromDto(createBookCommand)).thenReturn(book);
 
-        BookDto createdBookDto = bookService.createBook(createBookCommand);
+        when(bookRepository.save(any())).thenReturn(book);
+        when(bookMapper.mapToDto(book)).thenReturn(expectedBookDto);
 
-        Mockito.verify(bookRepository, Mockito.times(1)).save(bookCaptor.getValue());
+        BookDto result = bookService.createBook(createBookCommand);
 
+        ArgumentCaptor<Book> bookCaptor = ArgumentCaptor.forClass(Book.class);
+        verify(bookRepository).save(bookCaptor.capture());
         Book savedBook = bookCaptor.getValue();
+
         Assertions.assertEquals("Book One", savedBook.getTitle());
         Assertions.assertEquals("Author One", savedBook.getAuthor());
 
-        Assertions.assertEquals(expectedBookDto.getTitle(), createdBookDto.getTitle());
-        Assertions.assertEquals(expectedBookDto.getAuthor(), createdBookDto.getAuthor());
-        Assertions.assertEquals(expectedBookDto.getCategory(), createdBookDto.getCategory());
+        Assertions.assertEquals(expectedBookDto.getTitle(), result.getTitle());
+        Assertions.assertEquals(expectedBookDto.getAuthor(), result.getAuthor());
+        Assertions.assertEquals(expectedBookDto.getCategory(), result.getCategory());
     }
+
+
+    @Test
+    void shouldThrowExceptionWhenAuthorIsBlank() {
+
+        CreateBookCommand commandWithBlankAuthor = new CreateBookCommand("ValidTitle", "", "Category");
+
+        assertThrows(NullPointerException.class, () -> bookService.createBook(commandWithBlankAuthor));
+
+        verifyNoInteractions(bookRepository);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTitleIsBlank() {
+        CreateBookCommand commandWithBlankTitle = new CreateBookCommand("", "ValidAuthor", "Category");
+
+        assertThrows(NullPointerException.class, () -> bookService.createBook(commandWithBlankTitle));
+
+        verifyNoInteractions(bookRepository);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCategoryIsNull() {
+        CreateBookCommand commandWithNullCategory = new CreateBookCommand("ValidAuthor", "ValidTitle", null);
+
+        assertThrows(NullPointerException.class, () -> bookService.createBook(commandWithNullCategory));
+
+        verifyNoInteractions(bookRepository);
+    }
+
 }
