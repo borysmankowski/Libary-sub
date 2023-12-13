@@ -1,6 +1,5 @@
 package com.example.borys_mankowski_test_10.book.model;
 
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
