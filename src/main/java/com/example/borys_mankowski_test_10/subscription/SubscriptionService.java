@@ -41,11 +41,11 @@ public class SubscriptionService {
             throw new ResourceNotFoundException("Either author or category must be provided");
         }
 
-        if (createSubscriptionCommand.getAuthor() != null && subscriptionRepository.existsByAppUserIdAndBookAuthor(createSubscriptionCommand.getAppUserId(), createSubscriptionCommand.getAuthor())) {
+        if (createSubscriptionCommand.getAuthor() != null && subscriptionRepository.existsByAppUserIdAndBookAuthor(createSubscriptionCommand.getAppUserId(), createSubscriptionCommand.getAuthor())) { //todo race condition?
             throw new ResourceNotFoundException("Subscription with this author already exists for the customer");
         }
 
-        if (createSubscriptionCommand.getCategory() != null && subscriptionRepository.existsByAppUserIdAndBookCategory(createSubscriptionCommand.getAppUserId(), createSubscriptionCommand.getCategory())) {
+        if (createSubscriptionCommand.getCategory() != null && subscriptionRepository.existsByAppUserIdAndBookCategory(createSubscriptionCommand.getAppUserId(), createSubscriptionCommand.getCategory())) { //todo race condition?
             throw new DuplicateResourceException("Subscription with this category already exists for the customer");
         }
 
@@ -68,7 +68,9 @@ public class SubscriptionService {
     public void cancelSubscription(Long subscriptionId) {
 
         Subscription subscription = (subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new IllegalArgumentException("Subscripton of id" + subscriptionId + " doesnt exist")));
+                .orElseThrow(() -> new ResourceNotFoundException("Subscripton of id" + subscriptionId + " doesnt exist")));
+
+        subscription.getAppUser().removeSubscription(subscription);
 
         subscriptionRepository.deleteById(subscription.getId());
     }

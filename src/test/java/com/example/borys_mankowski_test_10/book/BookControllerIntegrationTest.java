@@ -32,7 +32,6 @@ public class BookControllerIntegrationTest {
     private static final String TITLE = "Nowakowie";
     private static final String CATEGORY = "Horror";
     private static final LocalDate ADDED_DATE = LocalDate.now();
-    private static final boolean AVAILABLE = true;
 
     @Autowired
     private BookRepository bookRepository;
@@ -43,7 +42,7 @@ public class BookControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final Book book1 = new Book(1L, AUTHOR, TITLE, CATEGORY, ADDED_DATE,AVAILABLE,1);
+    private final Book book1 = new Book(1L, AUTHOR, TITLE, CATEGORY, ADDED_DATE,1);
 
 
     @AfterEach

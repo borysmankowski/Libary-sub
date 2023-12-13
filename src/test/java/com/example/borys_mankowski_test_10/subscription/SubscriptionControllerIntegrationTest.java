@@ -38,7 +38,7 @@ public class SubscriptionControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(roles = "CLIENT")
+    @WithMockUser(roles = "USER")
     public void testCreateSubscription() throws Exception {
         CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand();
         createSubscriptionCommand.setAppUserId(1L);
@@ -60,7 +60,7 @@ public class SubscriptionControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(roles = "CLIENT")
+    @WithMockUser(roles = "USER")
     public void testCancelSubscription() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/subscriptions/1")

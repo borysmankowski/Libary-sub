@@ -1,10 +1,15 @@
 package com.example.borys_mankowski_test_10.appuser;
 
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
+import com.example.borys_mankowski_test_10.appuser.model.AppUserDto;
+import com.example.borys_mankowski_test_10.appuser.model.AppUserMapper;
+import com.example.borys_mankowski_test_10.appuser.model.CreateAppUserCommand;
 import com.example.borys_mankowski_test_10.email.EmailService;
 import com.example.borys_mankowski_test_10.exception.DuplicateResourceException;
 import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -24,8 +31,70 @@ class AppUserServiceTest {
     @InjectMocks
     private AppUserService appUserService;
 
-    @Autowired
+    @Mock
     private EmailService emailService;
+
+    @Captor
+    private ArgumentCaptor<AppUser> appUserArgumentCaptor;
+
+    @Mock
+    private AppUserMapper appUserMapper;
+
+    @Test
+    void testRegisterUser() throws Exception{
+
+        CreateAppUserCommand command = CreateAppUserCommand.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .build();
+
+        AppUser mappedAppUser = new AppUser();
+        mappedAppUser.setFirstName("John");
+        mappedAppUser.setLastName("Doe");
+        mappedAppUser.setEmail("john.doe@example.com");
+        mappedAppUser.setConfirmationToken("unique-token");
+        mappedAppUser.setEnabled(false);
+
+        AppUser savedAppUser = new AppUser();
+        savedAppUser.setId(1L);
+        savedAppUser.setFirstName("John");
+        savedAppUser.setLastName("Doe");
+        savedAppUser.setEmail("john.doe@example.com");
+        savedAppUser.setEnabled(false);
+        savedAppUser.setConfirmationToken("unique-token");
+
+        AppUserDto expectedDto = new AppUserDto();
+        expectedDto.setId(1L);
+        expectedDto.setFirstName("John");
+        expectedDto.setLastName("Doe");
+        expectedDto.setEmail("john.doe@example.com");
+        expectedDto.setEnabled(false);
+
+        when(appUserMapper.fromDto(command)).thenReturn(mappedAppUser);
+        when(appUserRepository.save(any(AppUser.class))).thenAnswer(invocation -> {
+            AppUser appUser = invocation.getArgument(0);
+            appUser.setConfirmationToken("unique-token");
+            return appUser;
+        });
+        when(appUserMapper.toDTO(any(AppUser.class))).thenReturn(expectedDto);
+
+
+        AppUserDto result = appUserService.registerAppUser(command);
+
+
+        assertEquals(expectedDto, result);
+        verify(appUserRepository).save(appUserArgumentCaptor.capture());
+        AppUser capturedAppUser = appUserArgumentCaptor.getValue();
+        assertEquals("John", capturedAppUser.getFirstName());
+        assertEquals("Doe", capturedAppUser.getLastName());
+        assertEquals("john.doe@example.com", capturedAppUser.getEmail());
+        assertFalse(capturedAppUser.isEnabled());
+        assertEquals("unique-token", capturedAppUser.getConfirmationToken());
+        verify(emailService).sendConfirmationEmail(eq("john.doe@example.com"), eq("Email Confirmation"), eq("unique-token"));
+
+
+    }
 
 
     @Test

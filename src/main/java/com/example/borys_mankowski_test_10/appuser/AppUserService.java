@@ -5,7 +5,6 @@ import com.example.borys_mankowski_test_10.appuser.model.AppUserDto;
 import com.example.borys_mankowski_test_10.appuser.model.AppUserMapper;
 import com.example.borys_mankowski_test_10.appuser.model.CreateAppUserCommand;
 import com.example.borys_mankowski_test_10.email.EmailService;
-import com.example.borys_mankowski_test_10.exception.DatabaseException;
 import com.example.borys_mankowski_test_10.exception.DuplicateResourceException;
 import com.example.borys_mankowski_test_10.exception.EmailException;
 import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
