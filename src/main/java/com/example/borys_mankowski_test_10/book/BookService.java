@@ -4,12 +4,9 @@ import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.book.model.BookDto;
 import com.example.borys_mankowski_test_10.book.model.BookMapper;
 import com.example.borys_mankowski_test_10.book.model.CreateBookCommand;
-import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @Service
