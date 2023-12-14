@@ -6,11 +6,13 @@ import com.example.borys_mankowski_test_10.book.model.BookMapper;
 import com.example.borys_mankowski_test_10.book.model.CreateBookCommand;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class BookServiceTest {
 
     @Mock
@@ -68,35 +70,6 @@ class BookServiceTest {
         Assertions.assertEquals(expectedBookDto.getTitle(), result.getTitle());
         Assertions.assertEquals(expectedBookDto.getAuthor(), result.getAuthor());
         Assertions.assertEquals(expectedBookDto.getCategory(), result.getCategory());
-    }
-
-
-    @Test
-    void shouldThrowExceptionWhenAuthorIsBlank() {
-
-        CreateBookCommand commandWithBlankAuthor = new CreateBookCommand("ValidTitle", "", "Category");
-
-        assertThrows(NullPointerException.class, () -> bookService.createBook(commandWithBlankAuthor));
-
-        verifyNoInteractions(bookRepository);
-    }
-
-    @Test
-    void shouldThrowExceptionWhenTitleIsBlank() {
-        CreateBookCommand commandWithBlankTitle = new CreateBookCommand("", "ValidAuthor", "Category");
-
-        assertThrows(NullPointerException.class, () -> bookService.createBook(commandWithBlankTitle));
-
-        verifyNoInteractions(bookRepository);
-    }
-
-    @Test
-    void shouldThrowExceptionWhenCategoryIsNull() {
-        CreateBookCommand commandWithNullCategory = new CreateBookCommand("ValidAuthor", "ValidTitle", null);
-
-        assertThrows(NullPointerException.class, () -> bookService.createBook(commandWithNullCategory));
-
-        verifyNoInteractions(bookRepository);
     }
 
 }

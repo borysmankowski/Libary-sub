@@ -77,8 +77,30 @@ public class BookControllerIntegrationTest {
     }
 
     @Test
-    void createBookFailure() throws Exception {
+    void createBookFailureBlankTitle() throws Exception {
         CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("", "Sample Author", "Sample Category");
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void createBookFailureBlankAuthor() throws Exception {
+        CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("Sample Title", "", "Sample Category");
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void createBookFailureBlankCategory() throws Exception {
+        CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("Sample Title", "Sample Author", "");
 
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")

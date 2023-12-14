@@ -41,11 +41,11 @@ public class SubscriptionService {
             throw new ResourceNotFoundException("Either author or category must be provided");
         }
 
-        if (createSubscriptionCommand.getAuthor() != null && subscriptionRepository.existsByAppUserIdAndBookAuthor(createSubscriptionCommand.getAppUserId(), createSubscriptionCommand.getAuthor())) { //todo race condition?
+        if (createSubscriptionCommand.getAuthor() != null && subscriptionRepository.existsByAppUserIdAndBookAuthor(createSubscriptionCommand.getAppUserId(), createSubscriptionCommand.getAuthor())) {
             throw new ResourceNotFoundException("Subscription with this author already exists for the customer");
         }
 
-        if (createSubscriptionCommand.getCategory() != null && subscriptionRepository.existsByAppUserIdAndBookCategory(createSubscriptionCommand.getAppUserId(), createSubscriptionCommand.getCategory())) { //todo race condition?
+        if (createSubscriptionCommand.getCategory() != null && subscriptionRepository.existsByAppUserIdAndBookCategory(createSubscriptionCommand.getAppUserId(), createSubscriptionCommand.getCategory())) {
             throw new DuplicateResourceException("Subscription with this category already exists for the customer");
         }
 

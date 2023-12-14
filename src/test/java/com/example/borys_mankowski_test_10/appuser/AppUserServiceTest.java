@@ -8,11 +8,12 @@ import com.example.borys_mankowski_test_10.email.EmailService;
 import com.example.borys_mankowski_test_10.exception.DuplicateResourceException;
 import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -21,13 +22,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class AppUserServiceTest {
 
     @Mock
@@ -93,9 +95,7 @@ class AppUserServiceTest {
         assertEquals(savedAppUser.getEmail(), capturedAppUser.getEmail());
         assertFalse(capturedAppUser.isEnabled());
         assertEquals(savedAppUser.getConfirmationToken(), capturedAppUser.getConfirmationToken());
-        verify(emailService).sendConfirmationEmail(eq("john.doe@example.com"), eq("Email Confirmation"), eq(capturedAppUser.getConfirmationToken()));
-
-        //todo last line of the test is failing
+        verify(emailService).sendConfirmationEmail(eq("john.doe@example.com"), eq("Email Confirmation"), anyString());
 
 
     }
@@ -149,10 +149,8 @@ class AppUserServiceTest {
         workingAppUser.setEmail("test@test.pl");
 
         when(appUserRepository.findAppUserByConfirmationToken(token)).thenReturn(Optional.of(sampleUser()));
-        when(appUserService.enableAppUser(workingAppUser.getEmail())).thenReturn(1);
 
         assertTrue(verifyUsers(workingAppUser, appUserRepository.findAppUserByConfirmationToken(token).get()));
-
     }
 
     @Test

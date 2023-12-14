@@ -54,12 +54,9 @@ public class GlobalExceptionHandler {
         if (rootCause instanceof ConstraintViolationException) {
             ConstraintViolationException constraintViolationException = (ConstraintViolationException) rootCause;
 
-            // Check if the violated constraint is related to the 'email' field
-            if (constraintViolationException.getCause().getMessage().contains("uk_email")) {
+            if (constraintViolationException.getCause().getMessage().contains("email")) {
                 return new ExceptionDto("User with the given email already exists.");
             }
-
-            // Add more conditions for other unique constraints in your application
         }
         return new ExceptionDto("A database error occurred. Please try again later.");
     }
