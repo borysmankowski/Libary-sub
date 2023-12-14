@@ -6,9 +6,7 @@ import com.example.borys_mankowski_test_10.appuser.model.AppUserMapper;
 import com.example.borys_mankowski_test_10.appuser.model.CreateAppUserCommand;
 import com.example.borys_mankowski_test_10.email.EmailService;
 import com.example.borys_mankowski_test_10.exception.DuplicateResourceException;
-import com.example.borys_mankowski_test_10.exception.EmailException;
 import com.example.borys_mankowski_test_10.exception.ResourceNotFoundException;
-import com.example.borys_mankowski_test_10.exception.UserEnablingException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,12 +31,8 @@ public class AppUserService {
         appUser.setConfirmationToken(token);
         appUserRepository.save(appUser);
 
-        try {
-            emailService.sendConfirmationEmail(appUser.getEmail(), "Email Confirmation", token);
+        emailService.sendConfirmationEmail(appUser.getEmail(), "Email Confirmation", token);
 
-        } catch (Exception e) {
-            throw new EmailException(e.getMessage());
-        }
         return appUserMapper.toDTO(appUser);
     }
 
@@ -57,23 +51,6 @@ public class AppUserService {
         } else {
             appUserFoundByToken.setEnabled(true);
         }
-
-        try {
-            enableAppUser(appUserFoundByToken.getEmail());
-        } catch (Exception e) {
-            throw new UserEnablingException(e.getMessage());
-        }
-    }
-
-    @Transactional
-    public int enableAppUser(String email) {
-        return appUserRepository.enableAppUser(email);
-    }
-
-    @Transactional(readOnly = true)
-    public AppUser findAppUserBySubscriptionsId(Long id) {
-        return appUserRepository.findBySubscriptionsId(id).orElseThrow(()
-                -> new ResourceNotFoundException("User not found for the given subscription id"));
     }
 
     @Transactional(readOnly = true)

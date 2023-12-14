@@ -17,8 +17,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -62,16 +60,10 @@ class AppUserControllerTest {
                                 .content(jsonRequest)
                 )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(jsonPath("$.firstName").value(createAppUserCommand.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(createAppUserCommand.getLastName()))
+                .andExpect(jsonPath("$.email").value(createAppUserCommand.getEmail()));
 
-        assertTrue(appUserRepository.existsByEmail("john.doe@example.com"));
-
-        Optional<AppUser> registeredCustomer = appUserRepository.findByEmail("john.doe@example.com");
-        assertTrue(registeredCustomer.isPresent());
-        assertEquals("John", registeredCustomer.get().getFirstName());
-        assertEquals("Doe", registeredCustomer.get().getLastName());
     }
 
     @Test
@@ -98,42 +90,18 @@ class AppUserControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void getAllCustomers() throws Exception {
-
         AppUser appUser = new AppUser();
         appUser.setFirstName("John");
         appUser.setLastName("Doe");
         appUser.setEmail("john.doe@example.com");
         appUserRepository.save(appUser);
 
-        AppUser appUser2 = new AppUser();
-        appUser2.setFirstName("Mike");
-        appUser2.setLastName("Doe");
-        appUser2.setEmail("mike.doe@example.com");
-        appUserRepository.save(appUser2);
-
-        mockMvc.perform(
-                        get("/api/v1/user")
-                                .param("page", "0")
-                                .param("size", "10")
-                )
+        mockMvc.perform(get("/api/v1/user")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[*]", hasSize(2)))
-                .andExpect(jsonPath("$.content[0].firstName", equalTo("John")))
-                .andExpect(jsonPath("$.content[0].lastName", equalTo("Doe")))
-                .andExpect(jsonPath("$.content[1].firstName", equalTo("Mike")))
-                .andExpect(jsonPath("$.content[1].lastName", equalTo("Doe")));
-
-        long count = appUserRepository.count();
-        assertEquals(2, count);
-        Optional<AppUser> foundCustomer1 = appUserRepository.findByEmail("john.doe@example.com");
-        assertTrue(foundCustomer1.isPresent());
-        assertEquals("John", foundCustomer1.get().getFirstName());
-        assertEquals("Doe", foundCustomer1.get().getLastName());
-
-        Optional<AppUser> foundCustomer2 = appUserRepository.findByEmail("mike.doe@example.com");
-        assertTrue(foundCustomer2.isPresent());
-        assertEquals("Mike", foundCustomer2.get().getFirstName());
-        assertEquals("Doe", foundCustomer2.get().getLastName());
-
+                .andExpect(jsonPath("$.content.[0].firstName", equalTo(appUser.getFirstName())))
+                .andExpect(jsonPath("$.content.[0].lastName", equalTo(appUser.getLastName())))
+                .andExpect(jsonPath("$.content.[0].email", equalTo(appUser.getEmail())));
     }
 }

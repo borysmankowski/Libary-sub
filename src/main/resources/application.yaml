@@ -36,4 +36,4 @@ library:
 scheduled:
   email:
     notification:
-      cron: "1 * * * * *"
+      cron: "0 12 * * * *"

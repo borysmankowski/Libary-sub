@@ -1,12 +1,9 @@
 package com.example.borys_mankowski_test_10.email;
 
 import com.example.borys_mankowski_test_10.book.model.Book;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,27 +21,20 @@ public class EmailService {
         this.baseUrl = baseUrl;
     }
 
-    public void sendConfirmationEmail(String to, String subject, String token) throws MessagingException {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+    public void sendConfirmationEmail(String to, String subject, String token) {
 
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
 
-        try {
-            helper.setTo(to);
-            helper.setSubject(subject);
+        String link = baseUrl + "?token=" + token;
 
-            String link = baseUrl + "?token=" + token;
+        StringBuilder messageContent = new StringBuilder("<p>Thank you for registering, please confirm your email address!</p>\n" +
+                "<p>Click the button to confirm:</p>" + link);
 
-            StringBuilder messageContent = new StringBuilder("<p>Thank you for registering, please confirm your email address!</p>\n" +
-                    "<p>Click the button to confirm:</p>" + link);
+        message.setText(String.valueOf(messageContent));
+        mailSender.send(message);
 
-
-            helper.setText(String.valueOf(messageContent), true);
-            mailSender.send(mimeMessage);
-
-        } catch (MessagingException e) {
-            throw new IllegalArgumentException("Failed to send email for: " + e);
-        }
     }
 
 
@@ -70,17 +60,12 @@ public class EmailService {
 
         }
 
-        MimeMessage message = mailSender.createMimeMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(textBuilder.toString());
 
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(textBuilder.toString(), true);
+        mailSender.send(message);
 
-            mailSender.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Email was not sent due to an error! ", e);
-        }
     }
 }

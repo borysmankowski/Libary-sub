@@ -14,16 +14,7 @@ import java.util.Optional;
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
-    Optional<AppUser> findByEmail(String email);
-
-    @Modifying
-    @Query("UPDATE AppUser a SET a.enabled=true WHERE a.email=?1")
-    int enableAppUser(String email);
-
-    Optional<AppUser> findBySubscriptionsId(@Param("subscriptionId") Long subscriptionId);
-
-    boolean existsByEmail(String email);
-
+    @Lock(LockModeType.OPTIMISTIC)
     Optional<AppUser> findAppUserByConfirmationToken(@Param("confirmationToken") String token);
 
     @Lock(LockModeType.OPTIMISTIC)

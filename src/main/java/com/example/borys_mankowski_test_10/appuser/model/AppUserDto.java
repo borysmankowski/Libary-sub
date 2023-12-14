@@ -1,8 +1,5 @@
 package com.example.borys_mankowski_test_10.appuser.model;
 
-import com.example.borys_mankowski_test_10.appuser.AppUserRole;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.*;
 
 @Setter
