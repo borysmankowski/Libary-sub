@@ -7,6 +7,7 @@ import com.example.borys_mankowski_test_10.subscription.model.CreateSubscription
 import com.example.borys_mankowski_test_10.subscription.model.Subscription;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionDto;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionMapper;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -38,6 +38,9 @@ class SubscriptionServiceTest {
 
     @Captor
     private ArgumentCaptor<Subscription> subscriptionCaptor;
+
+    @Mock
+    private EntityManager entityManager;
 
     @BeforeEach
     void init() {

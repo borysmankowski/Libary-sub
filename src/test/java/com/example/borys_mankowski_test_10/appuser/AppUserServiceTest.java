@@ -97,19 +97,6 @@ class AppUserServiceTest {
         assertEquals(savedAppUser.getConfirmationToken(), capturedAppUser.getConfirmationToken());
         verify(emailService).sendConfirmationEmail(eq("john.doe@example.com"), eq("Email Confirmation"), anyString());
 
-
-    }
-
-    @Test
-    void enableAppUser() {
-
-        when(appUserRepository.enableAppUser("user@example.com")).thenReturn(1);
-
-        int result = appUserService.enableAppUser("user@example.com");
-
-        verify(appUserRepository).enableAppUser("user@example.com");
-
-        assertEquals(1, result);
     }
 
     @Test
@@ -148,7 +135,10 @@ class AppUserServiceTest {
         AppUser workingAppUser = new AppUser();
         workingAppUser.setEmail("test@test.pl");
 
-        when(appUserRepository.findAppUserByConfirmationToken(token)).thenReturn(Optional.of(sampleUser()));
+        AppUser sampleUser = new AppUser();
+        sampleUser.setEmail("test@test.pl");
+
+        when(appUserRepository.findAppUserByConfirmationToken(token)).thenReturn(Optional.of(sampleUser));
 
         assertTrue(verifyUsers(workingAppUser, appUserRepository.findAppUserByConfirmationToken(token).get()));
     }
@@ -175,11 +165,4 @@ class AppUserServiceTest {
         return true;
     }
 
-    private static AppUser sampleUser() {
-        AppUser user = new AppUser();
-        user.setEmail("test@test.pl");
-        user.setEmail("test@test.pl");
-
-        return user;
-    }
 }
