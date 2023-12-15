@@ -39,7 +39,6 @@ public class AppUser {
     private String email;
 
     private String confirmationToken;
-    private String password;
 
     private boolean enabled;
 

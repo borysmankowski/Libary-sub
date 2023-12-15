@@ -12,7 +12,6 @@ public class AppUserMapper {
         appUser.setFirstName(command.getFirstName());
         appUser.setLastName(command.getLastName());
         appUser.setEmail(command.getEmail());
-        appUser.setPassword(command.getPassword());
         return appUser;
     }
 
@@ -22,7 +21,6 @@ public class AppUserMapper {
         dto.setFirstName(appUser.getFirstName());
         dto.setLastName(appUser.getLastName());
         dto.setEmail(appUser.getEmail());
-        dto.setPassword(appUser.getPassword());
         dto.setEnabled(appUser.isEnabled());
         return dto;
     }
