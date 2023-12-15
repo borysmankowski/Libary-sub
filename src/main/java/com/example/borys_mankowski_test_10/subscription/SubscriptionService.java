@@ -10,11 +10,11 @@ import com.example.borys_mankowski_test_10.subscription.model.CreateSubscription
 import com.example.borys_mankowski_test_10.subscription.model.Subscription;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionDto;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionMapper;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @AllArgsConstructor
 @Service
@@ -49,18 +49,13 @@ public class SubscriptionService {
             throw new DuplicateResourceException("Subscription with this category already exists for the customer");
         }
 
-        Subscription subscriptionNew;
-
-        subscriptionNew = subscriptionMapper.fromDto(createSubscriptionCommand);
+        Subscription subscriptionNew = subscriptionMapper.fromDto(createSubscriptionCommand);
 
         appUser.addSubscription(subscriptionNew);
 
         subscriptionNew.setSubscribed(true);
 
-
-        subscriptionNew = subscriptionRepository.save(subscriptionNew);
-        return subscriptionMapper.mapToDto(subscriptionNew);
-
+        return subscriptionMapper.mapToDto(subscriptionRepository.save(subscriptionNew));
     }
 
 
@@ -75,10 +70,9 @@ public class SubscriptionService {
         subscriptionRepository.deleteById(subscription.getId());
     }
 
+    @Transactional(readOnly = true)
     public Page<SubscriptionDto> getAllSubscriptions(Pageable pageable) {
         Page<Subscription> subscriptions = subscriptionRepository.findAll(pageable);
         return subscriptions.map(subscriptionMapper::mapToDto);
     }
-
-
 }

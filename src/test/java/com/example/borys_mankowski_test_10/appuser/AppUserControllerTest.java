@@ -2,6 +2,7 @@ package com.example.borys_mankowski_test_10.appuser;
 
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
 import com.example.borys_mankowski_test_10.appuser.model.CreateAppUserCommand;
+import com.example.borys_mankowski_test_10.book.model.CreateBookCommand;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -103,5 +106,38 @@ class AppUserControllerTest {
                 .andExpect(jsonPath("$.content.[0].firstName", equalTo(appUser.getFirstName())))
                 .andExpect(jsonPath("$.content.[0].lastName", equalTo(appUser.getLastName())))
                 .andExpect(jsonPath("$.content.[0].email", equalTo(appUser.getEmail())));
+    }
+
+    @Test
+    void createAppUserFailureBlankName() throws Exception {
+        CreateAppUserCommand invalidCreateAppUserCommand = new CreateAppUserCommand("", "Sample Lastname", "test@test.com");
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCreateAppUserCommand)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void createAppUserFailureBlankLastName() throws Exception {
+        CreateAppUserCommand invalidCreateAppUserCommand = new CreateAppUserCommand("First Name", " ", "test@test.com");
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCreateAppUserCommand)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void createAppUserFailureBlankEmail() throws Exception {
+        CreateAppUserCommand invalidCreateAppUserCommand = new CreateAppUserCommand("First Name", "Sample Lastname", "");
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCreateAppUserCommand)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 }
