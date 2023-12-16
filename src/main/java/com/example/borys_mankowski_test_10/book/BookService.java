@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookService {
 
-    private BookRepository bookRepository;
-    private BookMapper bookMapper;
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Transactional
     public BookDto createBook(CreateBookCommand createBookCommand) {

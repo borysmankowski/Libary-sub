@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/subscriptions")
 public class SubscriptionController {
 
-    private SubscriptionService subscriptionService;
+    private final SubscriptionService subscriptionService;
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
