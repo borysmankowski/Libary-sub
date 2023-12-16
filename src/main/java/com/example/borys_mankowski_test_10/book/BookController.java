@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/books")
 public class BookController {
 
-    private BookService bookService;
+    private final BookService bookService;
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")

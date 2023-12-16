@@ -12,5 +12,5 @@ import java.time.LocalDate;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query("SELECT b FROM Book b WHERE b.addedDate = CURRENT_DATE")
-    Page<Book> findAllByAddedDateToday(@Param("addedDate") LocalDate addedDate, Pageable pageable);
+    Page<Book> findAllByAddedDateToday(LocalDate addedDate, Pageable pageable);
 }
