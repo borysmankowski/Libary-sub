@@ -135,10 +135,10 @@ public class EmailSchedule {
             if (userEmailBooks.getUserEmail().equals(userEmail)) {
                 userEmailBooks.getMatchedBooks().addAll(matchedBooks);
                 return;
-            } else {
-                userEmailBooksList.add(new UserEmailBooks(userEmail, new ArrayList<>(matchedBooks)));
             }
         }
+        // If the user is not found, add a new entry
+        userEmailBooksList.add(new UserEmailBooks(userEmail, new ArrayList<>(matchedBooks)));
     }
 
     private Set<Book> matchBooksToSubscription(Subscription subscription, List<Book> newBooks) {
