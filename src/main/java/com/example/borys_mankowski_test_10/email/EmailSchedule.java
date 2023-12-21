@@ -29,57 +29,6 @@ public class EmailSchedule {
 
     private final SubscriptionRepository subscriptionRepository;
 
-//    @Scheduled(cron = "${scheduled.email.notification.cron}")
-//    public void sendScheduledEmailNotification() {
-//        LocalDate todayDateTime = LocalDate.now();
-//        final int pageSize = 10000;
-//        Page<Book> pageResult;
-//        Pageable pageable = PageRequest.of(0, pageSize);
-//
-//        do {
-//            pageResult = bookRepository.findAllByAddedDateToday(todayDateTime, pageable);
-//            List<Book> newBooks = pageResult.getContent();
-//
-//            processSubscriptionsInBatches(newBooks);
-//
-//            pageable = pageResult.nextPageable();
-//        } while (pageResult.hasNext());
-//    }
-//
-//    private void processSubscriptionsInBatches(List<Book> newBooks) {
-//        int batchSize = 500;
-//        int page = 0;
-//
-//        Pageable subscriptionPageable = PageRequest.of(page, batchSize);
-//        Page<Subscription> subscriptionPage;
-//
-//        do {
-//            subscriptionPage = subscriptionRepository.findAll(subscriptionPageable);
-//            List<Subscription> subscriptions = subscriptionPage.getContent();
-//
-//            for (Subscription subscription : subscriptions) {
-//                Set<Book> matchedBooks = matchBooksToSubscription(subscription, newBooks);
-//                if (!matchedBooks.isEmpty()) {
-//                    emailService.sendNotificationIfNewBooks(subscription.getAppUser().getEmail(), new ArrayList<>(matchedBooks));
-//                }
-//            }
-//
-//            subscriptionPageable = subscriptionPage.nextPageable();
-//            page++;
-//        } while (subscriptionPage.hasNext());
-//    }
-//
-//    private Set<Book> matchBooksToSubscription(Subscription subscription, List<Book> newBooks) {
-//        Set<Book> matchedBooks = new HashSet<>();
-//        for (Book book : newBooks) {
-//            if (book.getAuthor().equals(subscription.getBookAuthor()) ||
-//                    book.getCategory().equals(subscription.getBookCategory())) {
-//                matchedBooks.add(book);
-//            }
-//        }
-//        return matchedBooks;
-//    }
-
     @Scheduled(cron = "${scheduled.email.notification.cron}")
     public void sendScheduledEmailNotification() {
         LocalDate todayDateTime = LocalDate.now();
@@ -87,7 +36,7 @@ public class EmailSchedule {
         Page<Book> pageResult;
         Pageable pageable = PageRequest.of(0, pageSize);
 
-        List<UserEmailBooks> userEmailBooksList = new ArrayList<>(); // List to store matched books for each user
+        List<UserEmailBooks> userEmailBooksList = new ArrayList<>();
 
         do {
             pageResult = bookRepository.findAllByAddedDateToday(todayDateTime, pageable);
@@ -137,7 +86,6 @@ public class EmailSchedule {
                 return;
             }
         }
-        // If the user is not found, add a new entry
         userEmailBooksList.add(new UserEmailBooks(userEmail, new ArrayList<>(matchedBooks)));
     }
 

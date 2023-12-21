@@ -14,10 +14,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -51,12 +54,11 @@ public class SubscriptionControllerIntegrationTest {
 
         when(subscriptionService.createSubscription(any(CreateSubscriptionCommand.class))).thenReturn(subscriptionDto);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/subscriptions")
+        mockMvc.perform(post("/api/v1/subscriptions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createSubscriptionCommand))
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -65,6 +67,20 @@ public class SubscriptionControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/subscriptions/1")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void createSubscriptionFailureBlankAppUserId() throws Exception {
+        CreateSubscriptionCommand invalidCreateSubscriptionCommand = CreateSubscriptionCommand.builder()
+                .appUserId(null)
+                .author("Some Author")
+                .category("Some Category")
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/subscriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCreateSubscriptionCommand)))
+                .andExpect(status().isBadRequest());
     }
 }
