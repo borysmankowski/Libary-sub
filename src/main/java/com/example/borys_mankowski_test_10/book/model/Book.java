@@ -17,13 +17,12 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(
         name = "books",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"title"})
-        },
         indexes = {
+                @Index(name = "id_index", columnList = "id"),
+                @Index(name = "author_index", columnList = "author"),
+                @Index(name = "title_author", columnList = "title"),
                 @Index(name = "added_date_index", columnList = "added_date"),
                 @Index(name = "category_index", columnList = "category"),
-                @Index(name = "author_index", columnList = "author")
         }
 )
 
@@ -35,6 +34,7 @@ public class Book {
 
     private String author;
 
+    @Column(unique = true)
     private String title;
 
     private String category;
