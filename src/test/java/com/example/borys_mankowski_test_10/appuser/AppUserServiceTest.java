@@ -14,6 +14,8 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Optional;
 
@@ -165,4 +167,11 @@ class AppUserServiceTest {
         return true;
     }
 
+    @Test
+    public void testGetAllCustomers() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        when(appUserRepository.findAll(pageRequest)).thenReturn(Page.empty());
+        Page<AppUserDto> result = appUserService.getAllUsers(pageRequest);
+        assertEquals(Page.empty(), result);
+    }
 }

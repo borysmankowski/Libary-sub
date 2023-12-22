@@ -92,7 +92,7 @@ class AppUserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    void getAllCustomers() throws Exception {
+    void getAllAppUsers() throws Exception {
         AppUser appUser = new AppUser();
         appUser.setFirstName("John");
         appUser.setLastName("Doe");
