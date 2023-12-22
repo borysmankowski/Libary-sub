@@ -1,19 +1,18 @@
 package com.example.borys_mankowski_test_10.subscription;
 
 import com.example.borys_mankowski_test_10.appuser.AppUserRepository;
-import com.example.borys_mankowski_test_10.appuser.AppUserService;
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
 import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.subscription.model.CreateSubscriptionCommand;
 import com.example.borys_mankowski_test_10.subscription.model.Subscription;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionDto;
 import com.example.borys_mankowski_test_10.subscription.model.SubscriptionMapper;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -43,13 +42,12 @@ class SubscriptionServiceTest {
 
     @Mock
     private SubscriptionMapper subscriptionMapper;
+
+    @InjectMocks
     private SubscriptionService subscriptionService;
 
     @Captor
     private ArgumentCaptor<Subscription> subscriptionCaptor;
-
-    @Mock
-    private EntityManager entityManager;
 
     @BeforeEach
     void init() {
@@ -118,7 +116,7 @@ class SubscriptionServiceTest {
         subscriptionService.cancelSubscription(subscriptionId);
 
         verify(appUser).removeSubscription(existingSubscription);
-        verify(subscriptionRepository).delete(existingSubscription);
+        verify(subscriptionRepository).deleteById(existingSubscription.getId());
     }
 
 

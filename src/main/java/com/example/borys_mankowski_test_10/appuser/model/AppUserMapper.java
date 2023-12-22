@@ -2,12 +2,10 @@ package com.example.borys_mankowski_test_10.appuser.model;
 
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 public class AppUserMapper {
 
-    public AppUser fromDto (CreateAppUserCommand command) {
+    public AppUser fromDto(CreateAppUserCommand command) {
         AppUser appUser = new AppUser();
         appUser.setFirstName(command.getFirstName());
         appUser.setLastName(command.getLastName());
@@ -15,7 +13,7 @@ public class AppUserMapper {
         return appUser;
     }
 
-    public AppUserDto toDTO (AppUser appUser) {
+    public AppUserDto toDTO(AppUser appUser) {
         AppUserDto dto = new AppUserDto();
         dto.setId(appUser.getId());
         dto.setFirstName(appUser.getFirstName());

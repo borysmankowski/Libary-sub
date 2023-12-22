@@ -4,6 +4,7 @@ import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.book.model.BookDto;
 import com.example.borys_mankowski_test_10.book.model.BookMapper;
 import com.example.borys_mankowski_test_10.book.model.CreateBookCommand;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,6 +71,11 @@ class BookServiceTest {
         Assertions.assertEquals(expectedBookDto.getTitle(), result.getTitle());
         Assertions.assertEquals(expectedBookDto.getAuthor(), result.getAuthor());
         Assertions.assertEquals(expectedBookDto.getCategory(), result.getCategory());
+    }
+
+    @AfterEach
+    void teardown() {
+        bookRepository.deleteAll();
     }
 
 }
