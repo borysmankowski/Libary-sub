@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserEmailBooks {
+public class AppUserEmailBooks {
     private String userEmail;
     private List<Book> matchedBooks;
 

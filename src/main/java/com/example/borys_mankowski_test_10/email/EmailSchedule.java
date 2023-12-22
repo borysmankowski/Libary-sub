@@ -1,6 +1,6 @@
 package com.example.borys_mankowski_test_10.email;
 
-import com.example.borys_mankowski_test_10.appuser.model.UserEmailBooks;
+import com.example.borys_mankowski_test_10.appuser.model.AppUserEmailBooks;
 import com.example.borys_mankowski_test_10.book.BookRepository;
 import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.subscription.SubscriptionRepository;
@@ -36,25 +36,25 @@ public class EmailSchedule {
         Page<Book> pageResult;
         Pageable pageable = PageRequest.of(0, pageSize);
 
-        List<UserEmailBooks> userEmailBooksList = new ArrayList<>();
+        List<AppUserEmailBooks> appUserEmailBooksList = new ArrayList<>();
 
         do {
             pageResult = bookRepository.findAllByAddedDateToday(todayDateTime, pageable);
             List<Book> newBooks = pageResult.getContent();
 
-            processSubscriptionsInBatches(newBooks, userEmailBooksList);
+            processSubscriptionsInBatches(newBooks, appUserEmailBooksList);
 
             pageable = pageResult.nextPageable();
         } while (pageResult.hasNext());
 
-        for (UserEmailBooks userEmailBooks : userEmailBooksList) {
-            String userEmail = userEmailBooks.getUserEmail();
-            List<Book> matchedBooks = userEmailBooks.getMatchedBooks();
+        for (AppUserEmailBooks appUserEmailBooks : appUserEmailBooksList) {
+            String userEmail = appUserEmailBooks.getUserEmail();
+            List<Book> matchedBooks = appUserEmailBooks.getMatchedBooks();
             emailService.sendNotificationIfNewBooks(userEmail, new ArrayList<>(matchedBooks));
         }
     }
 
-    private void processSubscriptionsInBatches(List<Book> newBooks, List<UserEmailBooks> userEmailBooksList) {
+    public void processSubscriptionsInBatches(List<Book> newBooks, List<AppUserEmailBooks> appUserEmailBooksList) {
         int batchSize = 1;
         int page = 0;
 
@@ -70,7 +70,7 @@ public class EmailSchedule {
 
                 if (!matchedBooks.isEmpty()) {
                     String userEmail = subscription.getAppUser().getEmail();
-                    updateUserEmailBooksList(userEmail, matchedBooks, userEmailBooksList);
+                    updateUserEmailBooksList(userEmail, matchedBooks, appUserEmailBooksList);
                 }
             }
 
@@ -79,17 +79,17 @@ public class EmailSchedule {
         } while (subscriptionPage.hasNext());
     }
 
-    private void updateUserEmailBooksList(String userEmail, Set<Book> matchedBooks, List<UserEmailBooks> userEmailBooksList) {
-        for (UserEmailBooks userEmailBooks : userEmailBooksList) {
-            if (userEmailBooks.getUserEmail().equals(userEmail)) {
-                userEmailBooks.getMatchedBooks().addAll(matchedBooks);
+    public void updateUserEmailBooksList(String userEmail, Set<Book> matchedBooks, List<AppUserEmailBooks> appUserEmailBooksList) {
+        for (AppUserEmailBooks appUserEmailBooks : appUserEmailBooksList) {
+            if (appUserEmailBooks.getUserEmail().equals(userEmail)) {
+                appUserEmailBooks.getMatchedBooks().addAll(matchedBooks);
                 return;
             }
         }
-        userEmailBooksList.add(new UserEmailBooks(userEmail, new ArrayList<>(matchedBooks)));
+        appUserEmailBooksList.add(new AppUserEmailBooks(userEmail, new ArrayList<>(matchedBooks)));
     }
 
-    private Set<Book> matchBooksToSubscription(Subscription subscription, List<Book> newBooks) {
+    public Set<Book> matchBooksToSubscription(Subscription subscription, List<Book> newBooks) {
         Set<Book> matchedBooks = new HashSet<>();
         for (Book book : newBooks) {
             if (book.getAuthor().equals(subscription.getBookAuthor()) ||
