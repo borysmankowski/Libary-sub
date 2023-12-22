@@ -1,6 +1,7 @@
 package com.example.borys_mankowski_test_10.subscription;
 
 import com.example.borys_mankowski_test_10.appuser.AppUserRepository;
+import com.example.borys_mankowski_test_10.appuser.AppUserService;
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
 import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.subscription.model.CreateSubscriptionCommand;
@@ -15,13 +16,21 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -95,6 +104,43 @@ class SubscriptionServiceTest {
         assertEquals(createSubscriptionCommand.getCategory(), savedSubscription.getBookCategory());
         assertNotNull(savedSubscription.getVersion());
 
+    }
+
+    @Test
+    public void cancelSubscription_cancelsExistingSubscription() {
+        Long subscriptionId = 1L;
+        Subscription existingSubscription = mock(Subscription.class);
+        AppUser appUser = mock(AppUser.class);
+
+        when(existingSubscription.getAppUser()).thenReturn(appUser);
+        when(subscriptionRepository.findById(subscriptionId)).thenReturn(Optional.of(existingSubscription));
+
+        subscriptionService.cancelSubscription(subscriptionId);
+
+        verify(appUser).removeSubscription(existingSubscription);
+        verify(subscriptionRepository).delete(existingSubscription);
+    }
+
+
+    @Test
+    public void getAllSubscriptions_returnsExpectedSubscriptions() {
+        Pageable pageable = PageRequest.of(0, 5);
+        Subscription subscription = new Subscription();
+        List<Subscription> subscriptionList = Arrays.asList(subscription);
+
+        Page<Subscription> subscriptionPage = new PageImpl<>(subscriptionList);
+        SubscriptionDto subscriptionDto = new SubscriptionDto();
+
+        when(subscriptionRepository.findAll(pageable)).thenReturn(subscriptionPage);
+        when(subscriptionMapper.mapToDto(subscription)).thenReturn(subscriptionDto);
+
+        Page<SubscriptionDto> result = subscriptionService.getAllSubscriptions(pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals(subscriptionDto, result.getContent().get(0));
+
+        verify(subscriptionRepository, times(1)).findAll(pageable);
     }
 
 }
