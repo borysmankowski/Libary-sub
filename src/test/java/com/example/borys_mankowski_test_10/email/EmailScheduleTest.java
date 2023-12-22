@@ -5,6 +5,7 @@ import com.example.borys_mankowski_test_10.book.BookRepository;
 import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.subscription.SubscriptionRepository;
 import com.example.borys_mankowski_test_10.subscription.model.Subscription;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -138,5 +139,10 @@ class EmailScheduleTest {
 
         assertEquals(2, matchedBooks.size());
         assertTrue(matchedBooks.contains(book));
+    }
+
+    @AfterEach
+    void teardown() {
+        subscriptionRepository.deleteAll();
     }
 }

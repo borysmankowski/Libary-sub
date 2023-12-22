@@ -55,7 +55,7 @@ public class EmailSchedule {
     }
 
     public void processSubscriptionsInBatches(List<Book> newBooks, List<AppUserEmailBooks> appUserEmailBooksList) {
-        int batchSize = 1;
+        int batchSize = 100;
         int page = 0;
 
         Pageable subscriptionPageable = PageRequest.of(page, batchSize);

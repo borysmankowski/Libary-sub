@@ -1,6 +1,10 @@
 package com.example.borys_mankowski_test_10.appuser.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Setter
 @NoArgsConstructor
