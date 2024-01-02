@@ -43,9 +43,7 @@ public class SubscriptionControllerIntegrationTest {
     @Test
     @WithMockUser(roles = "USER")
     public void testCreateSubscription() throws Exception {
-        CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand();
-        createSubscriptionCommand.setAppUserId(1L);
-        createSubscriptionCommand.setAuthor("Author1");
+        CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand(1L, "Author1", "Category1");
 
         SubscriptionDto subscriptionDto = new SubscriptionDto();
         subscriptionDto.setId(1L);
