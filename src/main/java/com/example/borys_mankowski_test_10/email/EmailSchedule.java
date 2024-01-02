@@ -33,89 +33,26 @@ public class EmailSchedule {
 
     private final AppUserRepository appUserRepository;
 
-//    @Scheduled(cron = "${scheduled.email.notification.cron}")
-//    public void sendScheduledEmailNotification() {
-//        LocalDate todayDateTime = LocalDate.now();
-//        final int pageSize = 10000;
-//        Page<Book> pageResult;
-//        Pageable pageable = PageRequest.of(0, pageSize);
-//
-//        List<AppUserEmailBooks> appUserEmailBooksList = new ArrayList<>();
-//
-//        do {
-//            pageResult = bookRepository.findAllByAddedDateToday(todayDateTime, pageable);
-//            List<Book> newBooks = pageResult.getContent();
-//
-//            processSubscriptionsInBatches(newBooks, appUserEmailBooksList);
-//
-//            pageable = pageResult.nextPageable();
-//        } while (pageResult.hasNext());
-//
-//        for (AppUserEmailBooks appUserEmailBooks : appUserEmailBooksList) {
-//            String userEmail = appUserEmailBooks.getUserEmail();
-//            List<Book> matchedBooks = appUserEmailBooks.getMatchedBooks();
-//            emailService.sendNotificationIfNewBooks(userEmail, new ArrayList<>(matchedBooks));
-//        }
-//    }
-//
-//    public void processSubscriptionsInBatches(List<Book> newBooks, List<AppUserEmailBooks> appUserEmailBooksList) {
-//        int batchSize = 100;
-//        int page = 0;
-//
-//        Pageable subscriptionPageable = PageRequest.of(page, batchSize);
-//        Page<Subscription> subscriptionPage;
-//
-//        do {
-//            subscriptionPage = subscriptionRepository.findAll(subscriptionPageable);
-//            List<Subscription> subscriptions = subscriptionPage.getContent();
-//
-//            for (Subscription subscription : subscriptions) {
-//                Set<Book> matchedBooks = matchBooksToSubscription(subscription, newBooks);
-//
-//                if (!matchedBooks.isEmpty()) {
-//                    String userEmail = subscription.getAppUser().getEmail();
-//                    updateUserEmailBooksList(userEmail, matchedBooks, appUserEmailBooksList);
-//                }
-//            }
-//
-//            subscriptionPageable = subscriptionPage.nextPageable();
-//            page++;
-//        } while (subscriptionPage.hasNext());
-//    }
-//
-//    public void updateUserEmailBooksList(String userEmail, Set<Book> matchedBooks, List<AppUserEmailBooks> appUserEmailBooksList) {
-//        for (AppUserEmailBooks appUserEmailBooks : appUserEmailBooksList) {
-//            if (appUserEmailBooks.getUserEmail().equals(userEmail)) {
-//                appUserEmailBooks.getMatchedBooks().addAll(matchedBooks);
-//                return;
-//            }
-//        }
-//        appUserEmailBooksList.add(new AppUserEmailBooks(userEmail, new ArrayList<>(matchedBooks)));
-//    }
-//
-//    public Set<Book> matchBooksToSubscription(Subscription subscription, List<Book> newBooks) {
-//        Set<Book> matchedBooks = new HashSet<>();
-//        for (Book book : newBooks) {
-//            if (book.getAuthor().equals(subscription.getBookAuthor()) ||
-//                    book.getCategory().equals(subscription.getBookCategory())) {
-//                matchedBooks.add(book);
-//            }
-//        }
-//        return matchedBooks;
-//    }
-
     @Scheduled(cron = "${scheduled.email.notification.cron}")
     public void sendScheduledEmailNotification() {
         LocalDate todayDateTime = LocalDate.now();
         final int pageSize = 10000;
-        Pageable pageable = PageRequest.of(0, pageSize);
+        int page = 0;
+        Pageable pageable = PageRequest.of(page, pageSize);
 
-        appUserRepository.findUsersWithBooksAddedToday(pageable)
-                .forEach(appUser -> {
-                    List<Book> newBooks = bookRepository.findAllByAddedDateToday(todayDateTime, pageable).getContent();
-                    processSubscriptions(appUser, newBooks);
-                });
+        do {
+
+            Page<AppUser> appUserPage = appUserRepository.findUsersWithBooksAddedToday(pageable);
+            List<AppUser> appUsers = appUserPage.getContent();
+
+            for (AppUser appUser : appUsers) {
+                List<Book> newBooks = bookRepository.findAllByAddedDateToday(todayDateTime, pageable).getContent();
+                processSubscriptions(appUser, newBooks);
+            }
+            page++;
+        } while (pageable.isPaged());
     }
+
 
     public void processSubscriptions(AppUser appUser, List<Book> newBooks) {
         int batchSize = 100;
@@ -126,7 +63,7 @@ public class EmailSchedule {
         List<Book> matchedBooks = new ArrayList<>();
 
         do {
-            subscriptionPage = subscriptionRepository.findAll(subscriptionPageable);
+            subscriptionPage = subscriptionRepository.findAllByAppUserId(appUser.getId(),subscriptionPageable);
             List<Subscription> subscriptions = subscriptionPage.getContent();
 
             for (Subscription subscription : subscriptions) {

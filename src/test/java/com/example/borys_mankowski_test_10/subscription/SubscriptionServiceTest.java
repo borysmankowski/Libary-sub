@@ -56,10 +56,7 @@ class SubscriptionServiceTest {
 
     @Test
     void testCreateSubscription() {
-        CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand();
-        createSubscriptionCommand.setAppUserId(1L);
-        createSubscriptionCommand.setCategory("Comedy");
-        createSubscriptionCommand.setAuthor("Tomasz");
+        CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand(1L,"Comedy", "Tomasz");
 
 
         Book book = new Book();

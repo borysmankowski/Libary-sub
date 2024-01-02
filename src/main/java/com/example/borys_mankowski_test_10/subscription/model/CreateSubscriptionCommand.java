@@ -1,11 +1,14 @@
 package com.example.borys_mankowski_test_10.subscription.model;
 
+import com.example.borys_mankowski_test_10.appuser.AppUserRepository;
+import com.example.borys_mankowski_test_10.appuser.model.AppUser;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.Optional;
+
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder

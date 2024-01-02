@@ -1,6 +1,7 @@
 package com.example.borys_mankowski_test_10.email;
 
 import com.example.borys_mankowski_test_10.book.model.Book;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
 
     private final JavaMailSender mailSender;
@@ -16,10 +18,6 @@ public class EmailService {
     @Value("${library.base-url}")
     private String baseUrl;
 
-    public EmailService(JavaMailSender mailSender, @Value("${library.base-url}") String baseUrl) {
-        this.mailSender = mailSender;
-        this.baseUrl = baseUrl;
-    }
 
     public void sendConfirmationEmail(String to, String subject, String token) {
 
