@@ -18,5 +18,5 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     @Lock(LockModeType.OPTIMISTIC)
     boolean existsByAppUserIdAndBookAuthor(Long appUserId, String author);
 
-    Page<Subscription> findAllByAppUserId(Long appUserId, Pageable pageable);
+    Page<Subscription> findAllByAppUser_Email(String appUserEmail, Pageable pageable);
 }

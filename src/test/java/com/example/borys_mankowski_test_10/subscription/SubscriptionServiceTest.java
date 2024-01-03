@@ -56,7 +56,7 @@ class SubscriptionServiceTest {
 
     @Test
     void testCreateSubscription() {
-        CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand(1L,"Comedy", "Tomasz");
+        CreateSubscriptionCommand createSubscriptionCommand = new CreateSubscriptionCommand(1L,"Tomasz", "Comedy");
 
 
         Book book = new Book();

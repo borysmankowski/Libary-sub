@@ -1,8 +1,6 @@
 package com.example.borys_mankowski_test_10.email;
 
 import com.example.borys_mankowski_test_10.appuser.AppUserRepository;
-import com.example.borys_mankowski_test_10.appuser.model.AppUser;
-import com.example.borys_mankowski_test_10.appuser.model.AppUserEmailBooks;
 import com.example.borys_mankowski_test_10.book.BookRepository;
 import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.subscription.SubscriptionRepository;
@@ -38,23 +36,24 @@ public class EmailSchedule {
         LocalDate todayDateTime = LocalDate.now();
         final int pageSize = 10000;
         int page = 0;
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable appUserPageable = PageRequest.of(page, pageSize);
+        Page<String> appUserPage;
 
         do {
 
-            Page<AppUser> appUserPage = appUserRepository.findUsersWithBooksAddedToday(pageable);
-            List<AppUser> appUsers = appUserPage.getContent();
+            appUserPage = appUserRepository.findUserEmailsForBooksAddedToday(appUserPageable);
+            List<String> appUsers = appUserPage.getContent();
 
-            for (AppUser appUser : appUsers) {
-                List<Book> newBooks = bookRepository.findAllByAddedDateToday(todayDateTime, pageable).getContent();
-                processSubscriptions(appUser, newBooks);
+            for (String appUserEmail : appUsers) {
+                List<Book> newBooks = bookRepository.findAllByAddedDateToday(todayDateTime, appUserPageable).getContent();
+                processSubscriptions(appUserEmail, newBooks);
             }
+
             page++;
-        } while (pageable.isPaged());
+        } while (appUserPage.hasNext());
     }
 
-
-    public void processSubscriptions(AppUser appUser, List<Book> newBooks) {
+    public void processSubscriptions(String appUserEmail, List<Book> newBooks) {
         int batchSize = 100;
         int page = 0;
         Pageable subscriptionPageable = PageRequest.of(page, batchSize);
@@ -63,7 +62,7 @@ public class EmailSchedule {
         List<Book> matchedBooks = new ArrayList<>();
 
         do {
-            subscriptionPage = subscriptionRepository.findAllByAppUserId(appUser.getId(),subscriptionPageable);
+            subscriptionPage = subscriptionRepository.findAllByAppUser_Email(appUserEmail, subscriptionPageable);
             List<Subscription> subscriptions = subscriptionPage.getContent();
 
             for (Subscription subscription : subscriptions) {
@@ -76,9 +75,10 @@ public class EmailSchedule {
         } while (subscriptionPage.hasNext());
 
         if (!matchedBooks.isEmpty()) {
-            emailService.sendNotificationIfNewBooks(appUser.getEmail(), new ArrayList<>(matchedBooks));
+            emailService.sendNotificationIfNewBooks(appUserEmail, new ArrayList<>(matchedBooks));
         }
     }
+
 
     public Set<Book> matchBooksToSubscription(Subscription subscription, List<Book> newBooks) {
         Set<Book> matchedBooks = new HashSet<>();
@@ -91,6 +91,7 @@ public class EmailSchedule {
         return matchedBooks;
     }
 }
+
 
 
 
