@@ -21,6 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -80,11 +81,11 @@ public class BookControllerIntegrationTest {
     void createBookFailureBlankTitle() throws Exception {
         CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("", "Sample Author", "Sample Category");
 
-
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Title cannot be blank"));
     }
 
     @Test
@@ -95,17 +96,22 @@ public class BookControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Author cannot be blank"));
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void createBookFailureBlankCategory() throws Exception {
         CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("Sample Title", "Sample Author", "");
 
+        String exceptionMsg = "Category cannot be blank";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(exceptionMsg));
     }
 }
