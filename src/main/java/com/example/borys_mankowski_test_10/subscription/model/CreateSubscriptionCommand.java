@@ -1,11 +1,10 @@
 package com.example.borys_mankowski_test_10.subscription.model;
 
-import com.example.borys_mankowski_test_10.appuser.AppUserRepository;
-import com.example.borys_mankowski_test_10.appuser.model.AppUser;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
-import java.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -14,7 +13,7 @@ import java.util.Optional;
 @Builder
 public class CreateSubscriptionCommand {
 
-    @NotNull(message = "App User Id cannot be null! ")
+    @ExistingAppUser
     private Long appUserId;
 
     private String author;
