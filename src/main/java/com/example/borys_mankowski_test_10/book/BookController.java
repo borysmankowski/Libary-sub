@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +21,23 @@ public class BookController {
 
     private final BookService bookService;
 
+//    @PostMapping
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<BookDto> createBook(@Valid @RequestBody CreateBookCommand createBookCommand) {
+//        BookDto createdBook = bookService.createBook(createBookCommand);
+//        return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
+//    }
+
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<BookDto> createBook(@Valid @RequestBody CreateBookCommand createBookCommand) {
+    public ResponseEntity<?> createBook(@Valid @RequestBody CreateBookCommand createBookCommand, Errors errors) {
+        if (errors.hasErrors()) {
+            FieldError fieldError = errors.getFieldError();
+            assert fieldError != null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(fieldError.getDefaultMessage());
+        }
+
         BookDto createdBook = bookService.createBook(createBookCommand);
         return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
     }
