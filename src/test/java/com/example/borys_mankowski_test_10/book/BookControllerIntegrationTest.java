@@ -78,26 +78,32 @@ public class BookControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void createBookFailureBlankTitle() throws Exception {
         CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("", "Sample Author", "Sample Category");
 
+        String exceptionMsg = "Title cannot be blank";
+
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Title cannot be blank"));
+                .andExpect(MockMvcResultMatchers.content().string(exceptionMsg));
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void createBookFailureBlankAuthor() throws Exception {
         CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("Sample Title", "", "Sample Category");
 
+        String exceptionMsg = "Author cannot be blank";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
+                .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Author cannot be blank"));
+                .andExpect(MockMvcResultMatchers.content().string(exceptionMsg));
     }
 
     @Test
@@ -112,6 +118,6 @@ public class BookControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(exceptionMsg));
+                .andExpect(MockMvcResultMatchers.content().string(exceptionMsg));
     }
 }

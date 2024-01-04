@@ -14,6 +14,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -69,6 +70,7 @@ public class SubscriptionControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     void createSubscriptionFailureBlankAppUserId() throws Exception {
         CreateSubscriptionCommand invalidCreateSubscriptionCommand = CreateSubscriptionCommand.builder()
                 .appUserId(null)
@@ -76,9 +78,13 @@ public class SubscriptionControllerIntegrationTest {
                 .category("Some Category")
                 .build();
 
+        String exceptionMsg = "AppUserId cannot be blank";
+
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/subscriptions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateSubscriptionCommand)))
-                .andExpect(status().isBadRequest());
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().string(exceptionMsg));
     }
 }

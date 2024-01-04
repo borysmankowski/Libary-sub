@@ -32,6 +32,10 @@ spring:
     allow-bean-definition-overriding: false
 server:
   port: 8090
+  error:
+    include-message: always
+    include-stacktrace: never
+    include-binding-errors: never
 library:
   base-url: http://localhost:8090/api/v1/user/confirm
 scheduled:
