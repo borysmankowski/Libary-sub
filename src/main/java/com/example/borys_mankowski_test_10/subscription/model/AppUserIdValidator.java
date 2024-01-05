@@ -10,7 +10,6 @@ import javax.validation.ConstraintValidatorContext;
 @RequiredArgsConstructor
 public class AppUserIdValidator implements ConstraintValidator<ExistingAppUser, Long> {
 
-
     private final AppUserRepository appUserRepository;
 
     @Override

@@ -80,7 +80,7 @@ public class SubscriptionControllerIntegrationTest {
 
         String exceptionMsg = "AppUserId cannot be blank";
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/subscriptions")
+        mockMvc.perform(post("/api/v1/subscriptions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateSubscriptionCommand)))
                 .andDo(print())

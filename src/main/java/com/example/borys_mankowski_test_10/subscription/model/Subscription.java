@@ -29,8 +29,6 @@ public class Subscription {
 
     private boolean subscribed;
 
-    private boolean notificationSent;
-
     @Version
     private int version;
 }

@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,10 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@EnableWebMvc
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class BookControllerIntegrationTest {
@@ -43,7 +46,7 @@ public class BookControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final Book book1 = new Book(1L, AUTHOR, TITLE, CATEGORY, ADDED_DATE,1);
+    private final Book book1 = new Book(1L, AUTHOR, TITLE, CATEGORY, ADDED_DATE, 1);
 
 
     @AfterEach
@@ -80,44 +83,72 @@ public class BookControllerIntegrationTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void createBookFailureBlankTitle() throws Exception {
-        CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("", "Sample Author", "Sample Category");
-
         String exceptionMsg = "Title cannot be blank";
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
+        CreateBookCommand bookToSave = CreateBookCommand.builder()
+                .title(" ")
+                .author("Sample Author")
+                .category("Sample Category")
+                .build();
+
+        mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string(exceptionMsg));
+                        .with(user("admin").roles("ADMIN"))
+                        .content(objectMapper.writeValueAsString(bookToSave)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.message").value("validation errors"))
+                .andExpect(jsonPath("$.violations[0].field").value("title"))
+                .andExpect(jsonPath("$.violations[0].message").value(exceptionMsg));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void createBookFailureBlankAuthor() throws Exception {
-        CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("Sample Title", "", "Sample Category");
 
         String exceptionMsg = "Author cannot be blank";
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
+        CreateBookCommand bookToSave = CreateBookCommand.builder()
+                .title("Sample Title")
+                .author(" ")
+                .category("Sample Category")
+                .build();
+
+        mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
+                        .with(user("admin").roles("ADMIN"))
+                        .content(objectMapper.writeValueAsString(bookToSave)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string(exceptionMsg));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.message").value("validation errors"))
+                .andExpect(jsonPath("$.violations[0].field").value("author"))
+                .andExpect(jsonPath("$.violations[0].message").value(exceptionMsg));
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void createBookFailureBlankCategory() throws Exception {
-        CreateBookCommand invalidCreateBookCommand = new CreateBookCommand("Sample Title", "Sample Author", "");
 
         String exceptionMsg = "Category cannot be blank";
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/books")
+        CreateBookCommand bookToSave = CreateBookCommand.builder()
+                .title("Sample Title")
+                .author("Sample Author")
+                .category(" ")
+                .build();
+
+        mockMvc.perform(post("/api/v1/books")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidCreateBookCommand)))
+                        .with(user("admin").roles("ADMIN"))
+                        .content(objectMapper.writeValueAsString(bookToSave)))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string(exceptionMsg));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.message").value("validation errors"))
+                .andExpect(jsonPath("$.violations[0].field").value("category"))
+                .andExpect(jsonPath("$.violations[0].message").value(exceptionMsg));
     }
-}
+
+    }

@@ -20,9 +20,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.in;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,32 +114,50 @@ class AppUserControllerTest {
     void createAppUserFailureBlankName() throws Exception {
         CreateAppUserCommand invalidCreateAppUserCommand = new CreateAppUserCommand("", "Sample Lastname", "test@test.com");
 
+        String exceptionMsg = "FirstName cannot be blank";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateAppUserCommand)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.message").value("validation errors"))
+                .andExpect(jsonPath("$.violations[0].field").value("firstName"))
+                .andExpect(jsonPath("$.violations[0].message").value(exceptionMsg));
     }
 
     @Test
     void createAppUserFailureBlankLastName() throws Exception {
         CreateAppUserCommand invalidCreateAppUserCommand = new CreateAppUserCommand("First Name", " ", "test@test.com");
 
+        String exceptionMsg = "LastName cannot be blank";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateAppUserCommand)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.message").value("validation errors"))
+                .andExpect(jsonPath("$.violations[0].field").value("lastName"))
+                .andExpect(jsonPath("$.violations[0].message").value(exceptionMsg));
     }
 
     @Test
     void createAppUserFailureBlankEmail() throws Exception {
         CreateAppUserCommand invalidCreateAppUserCommand = new CreateAppUserCommand("First Name", "Sample Lastname", "");
 
+        String exceptionMsg = "Email cannot be blank";
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateAppUserCommand)))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.message").value("validation errors"))
+                .andExpect(jsonPath("$.violations[0].field").value("email"))
+                .andExpect(jsonPath("$.violations[0].message").value(exceptionMsg));
     }
 }
