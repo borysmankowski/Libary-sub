@@ -24,14 +24,6 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     @Query("SELECT v FROM AppUser v WHERE v.id = :id")
     Optional<AppUser> findByIdForLock(Long id);
 
-//    @Query("SELECT u.email " +
-//            "FROM Book b " +
-//            "JOIN Subscription s ON b.author = s.bookAuthor OR b.category = s.bookCategory " +
-//            "JOIN AppUser u ON s.appUser.id = u.id " +
-//            "WHERE b.addedDate = CURRENT_DATE " +
-//            "GROUP BY u.email")
-//    Page<String> findUserEmailsForBooksAddedToday(Pageable pageable);
-
     @Query("SELECT DISTINCT au FROM AppUser au " +
             "JOIN Subscription s ON s.appUser.id = au.id " +
             "JOIN Book b ON (b.author = s.bookAuthor OR b.category = s.bookCategory) AND b.addedDate = :addedDate " +

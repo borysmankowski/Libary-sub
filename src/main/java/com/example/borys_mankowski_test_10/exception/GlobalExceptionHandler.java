@@ -4,12 +4,22 @@ package com.example.borys_mankowski_test_10.exception;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationErrorDto handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        ValidationErrorDto errorDto = new ValidationErrorDto();
+        exception.getFieldErrors().forEach(error ->
+                errorDto.addViolation(error.getField(), error.getDefaultMessage()));
+        return errorDto;
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
