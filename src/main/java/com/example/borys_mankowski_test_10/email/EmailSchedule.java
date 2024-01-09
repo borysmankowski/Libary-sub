@@ -35,7 +35,7 @@ public class EmailSchedule {
 
         Page<AppUser> appUsers;
         do {
-            Pageable pageable = PageRequest.of(0, batchSize);
+            Pageable pageable = PageRequest.of(1, batchSize);
             appUsers = appUserRepository.findUsersForBooksAddedToday(todayDateTime, pageable);
 
             appUsers.forEach(appUser -> {
