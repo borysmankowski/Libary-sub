@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = {AppUserIdValidator.class})
 @Documented
 public @interface ExistingAppUser {
-    String message() default "App User does not exist";
+    String message() default "App User exisits";
 
     Class<?>[] groups() default {};
 

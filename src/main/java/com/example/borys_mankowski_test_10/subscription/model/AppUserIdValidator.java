@@ -21,3 +21,4 @@ public class AppUserIdValidator implements ConstraintValidator<ExistingAppUser, 
         return appUserId != null && appUserRepository.existsById(appUserId);
     }
 }
+
