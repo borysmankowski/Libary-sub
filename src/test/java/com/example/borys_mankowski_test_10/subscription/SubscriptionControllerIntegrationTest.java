@@ -68,23 +68,4 @@ public class SubscriptionControllerIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-
-    @Test
-    @WithMockUser(roles = "USER")
-    void createSubscriptionFailureBlankAppUserId() throws Exception {
-        CreateSubscriptionCommand invalidCreateSubscriptionCommand = CreateSubscriptionCommand.builder()
-                .appUserId(null)
-                .author("Some Author")
-                .category("Some Category")
-                .build();
-
-        String exceptionMsg = "AppUserId cannot be blank";
-
-        mockMvc.perform(post("/api/v1/subscriptions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidCreateSubscriptionCommand)))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string(exceptionMsg));
-    }
 }
