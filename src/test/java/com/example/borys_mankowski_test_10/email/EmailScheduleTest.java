@@ -82,7 +82,7 @@ class EmailScheduleTest {
         subscription.setBookAuthor("jan");
         subscription.setBookCategory("old");
 
-        when(appUserRepository.findUsersForBooksAddedToday(any(LocalDate.class), any(Pageable.class)))
+        when(appUserRepository.findUsersSubscribedForBooksAddedToday(any(LocalDate.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Collections.singletonList(appUser)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
@@ -100,7 +100,7 @@ class EmailScheduleTest {
     @Test
     public void testSendScheduledEmailNotificationWithoutNewBooks() {
 
-        when(appUserRepository.findUsersForBooksAddedToday(any(LocalDate.class), any(Pageable.class)))
+        when(appUserRepository.findUsersSubscribedForBooksAddedToday(any(LocalDate.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
         emailSchedule.sendScheduledEmailNotification();
