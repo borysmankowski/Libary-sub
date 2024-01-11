@@ -28,7 +28,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
             "JOIN Subscription s ON s.appUser.id = au.id " +
             "JOIN Book b ON (b.author = s.bookAuthor OR b.category = s.bookCategory) AND b.addedDate = :addedDate " +
             "GROUP BY au.email")
-    Page<AppUser> findUsersForBooksAddedToday (LocalDate addedDate, Pageable pageable);
+    Page<AppUser> findUsersSubscribedForBooksAddedToday (LocalDate addedDate, Pageable pageable);
 }
 
 

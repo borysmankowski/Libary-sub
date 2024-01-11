@@ -2,6 +2,7 @@ package com.example.borys_mankowski_test_10.security;
 
 
 import com.example.borys_mankowski_test_10.appuser.AppUserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,13 +27,6 @@ import java.util.List;
         securedEnabled = true,
         jsr250Enabled = true)
 public class WebSecurityConfig {
-
-    private final AppUserService appUserService;
-
-    public WebSecurityConfig(AppUserService appUserService) {
-        this.appUserService = appUserService;
-
-    }
 
     private static final String API_URL_PATTERN = "/api/v*/user/**";
     private static final String BOOKS_URL_PATTERN = "/api/v*/books/**";
