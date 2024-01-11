@@ -1,8 +1,6 @@
 package com.example.borys_mankowski_test_10.security;
 
 
-import com.example.borys_mankowski_test_10.appuser.AppUserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

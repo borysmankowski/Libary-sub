@@ -26,18 +26,4 @@ public class BookController {
         return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
     }
 
-//    @PostMapping
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    public ResponseEntity<?> createBook(@Valid @RequestBody CreateBookCommand createBookCommand, Errors errors) {
-//        if (errors.hasErrors()) {
-//            FieldError fieldError = errors.getFieldError();
-//            assert fieldError != null;
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body(fieldError.getDefaultMessage());
-//        }
-//
-//        BookDto createdBook = bookService.createBook(createBookCommand);
-//        return new ResponseEntity<>(createdBook, HttpStatus.CREATED);
-//    }
-
 }
