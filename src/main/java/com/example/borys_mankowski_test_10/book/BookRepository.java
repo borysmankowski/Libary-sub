@@ -18,4 +18,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             String author,
             Pageable pageable);
 
+    @Query("SELECT DISTINCT b FROM AppUser au " +
+            "JOIN Subscription s ON s.appUser.id = au.id " +
+            "JOIN Book b ON (b.author = s.bookAuthor OR b.category = s.bookCategory) AND b.addedDate = current_date()" +
+            "AND au.id = :appUserId")
+    Page<Book> findAllAddedTodayMatchingUserSubscriptions(
+            Long appUserId,
+            Pageable pageable);
+
 }

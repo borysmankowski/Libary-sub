@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
     @Lock(LockModeType.OPTIMISTIC)
@@ -26,9 +25,9 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
     @Query("SELECT DISTINCT au FROM AppUser au " +
             "JOIN Subscription s ON s.appUser.id = au.id " +
-            "JOIN Book b ON (b.author = s.bookAuthor OR b.category = s.bookCategory) AND b.addedDate = :addedDate " +
+            "JOIN Book b ON (b.author = s.bookAuthor OR b.category = s.bookCategory) AND b.addedDate = current_date() " +
             "GROUP BY au.email")
-    Page<AppUser> findUsersSubscribedForBooksAddedToday (LocalDate addedDate, Pageable pageable);
+    Page<AppUser> findUsersSubscribedForBooksAddedToday (Pageable pageable);
 }
 
 
