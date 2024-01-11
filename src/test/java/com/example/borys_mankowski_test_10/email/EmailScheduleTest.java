@@ -1,13 +1,10 @@
 package com.example.borys_mankowski_test_10.email;
 
-import com.example.borys_mankowski_test_10.appuser.AppUserRepository;
 import com.example.borys_mankowski_test_10.appuser.model.AppUser;
 import com.example.borys_mankowski_test_10.book.BookRepository;
 import com.example.borys_mankowski_test_10.book.model.Book;
 import com.example.borys_mankowski_test_10.subscription.SubscriptionRepository;
-import com.example.borys_mankowski_test_10.subscription.model.AppUserIdValidator;
 import com.example.borys_mankowski_test_10.subscription.model.Subscription;
-import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,18 +15,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,9 +39,6 @@ class EmailScheduleTest {
     private SubscriptionRepository subscriptionRepository;
 
     @Mock
-    private AppUserRepository appUserRepository;
-
-    @Mock
     private EmailService emailService;
 
 
@@ -61,7 +49,7 @@ class EmailScheduleTest {
 
 
     @Test
-    public void testSendScheduledEmailNotificationWithNewBooks() {
+    public void testNotifyUserWithNewBooks() {
         LocalDate todayDateTime = LocalDate.now();
 
         Book book = new Book();
@@ -82,30 +70,39 @@ class EmailScheduleTest {
         subscription.setBookAuthor("jan");
         subscription.setBookCategory("old");
 
-        when(appUserRepository.findUsersSubscribedForBooksAddedToday(any(Pageable.class)))
-                .thenReturn(new PageImpl<>(Collections.singletonList(appUser)))
+        when(bookRepository.findAllAddedTodayMatchingUserSubscriptions(anyLong(), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(Collections.singletonList(book)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        when(subscriptionRepository.findAllByAppUser_Email(anyString(), any(Pageable.class)))
-                .thenReturn(new PageImpl<>(Collections.singletonList(subscription)));
-
-        when(bookRepository.findAllByAddedDateAndCategoryOrAuthor(any(LocalDate.class), anyString(), anyString(), any(Pageable.class)))
-                .thenReturn(new PageImpl<>(Collections.singletonList(book)));
-
-        emailSchedule.sendScheduledEmailNotification();
+        emailSchedule.notifyUser(appUser);
 
         verify(emailService, times(1)).sendNotificationIfNewBooks(eq("test@example.com"), eq(Collections.singletonList(book)));
     }
 
     @Test
-    public void testSendScheduledEmailNotificationWithoutNewBooks() {
+    public void testNotifyUserWithoutNewBooks() {
 
-        when(appUserRepository.findUsersSubscribedForBooksAddedToday(any(Pageable.class)))
+        AppUser appUser = new AppUser();
+        appUser.setId(1L);
+        appUser.setEmail("test@example.com");
+
+        Book book = new Book();
+        book.setId(1L);
+        book.setAuthor("Antek");
+        book.setTitle("Nowak");
+        book.setAddedDate(LocalDate.now().minusDays(3));
+
+        Subscription subscription = new Subscription();
+        subscription.setId(1L);
+        subscription.setBookAuthor("Antek");
+        appUser.setSubscriptions(Set.of(subscription));
+
+        when(bookRepository.findAllAddedTodayMatchingUserSubscriptions(eq(1L), any()))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        emailSchedule.sendScheduledEmailNotification();
+        emailSchedule.notifyUser(appUser);
 
-        verify(emailService, never()).sendNotificationIfNewBooks(anyString(), anyList());
+        verify(emailService, never()).sendNotificationIfNewBooks(eq("test@example.com"), eq(Collections.singletonList(book)));
     }
 
 }

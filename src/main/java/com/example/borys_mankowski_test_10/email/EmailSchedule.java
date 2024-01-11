@@ -38,7 +38,7 @@ public class EmailSchedule {
         } while (pageOfUsersToNotify.hasNext());
     }
 
-    private void notifyUser(AppUser userToNotify) {
+    public void notifyUser(AppUser userToNotify) {
         Pageable booksPageRequest = PageRequest.of(0, 1000);
         Page<Book> pageOfBooks;
         List<Book> booksToSendInEmail = new ArrayList<>();

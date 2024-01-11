@@ -63,7 +63,7 @@ public class SubscriptionService {
     public void cancelSubscription(Long subscriptionId) {
 
         Subscription subscription = (subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Subscripton of id" + subscriptionId + " doesnt exist")));
+                .orElseThrow(() -> new ResourceNotFoundException("Subscripton of id " + subscriptionId + " doesnt exist")));
 
         subscription.getAppUser().removeSubscription(subscription);
 
