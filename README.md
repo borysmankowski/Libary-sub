@@ -1,6 +1,6 @@
 # 📚 Book Subscription & Notification System
 
-## A modern Spring Boot application enabling users to register, confirm their emails, manage books, and receive automated daily notifications about new releases from their subscribed authors or genres.
+ A modern Spring Boot application enabling users to register, confirm their emails, manage books, and receive automated daily notifications about new releases from their subscribed authors or genres.
 
 # 🌟 Overview
 
