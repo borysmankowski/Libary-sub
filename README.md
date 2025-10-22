@@ -18,22 +18,22 @@ This design ensures efficient email batching, avoids spam, and enhances the user
 
 # ✨ Key Features
 
-## User Registration & Email Verification
+**User Registration & Email Verification** -
 Secure user onboarding with email-based account activation using Spring Boot Mail.
 
-## Book Management
+**Book Management** -
 Users can add, update, and list books with ease via REST APIs backed by JPA.
 
-## Subscription System
+**Subscription System** -
 Subscribe to authors or genres and stay updated automatically.
 
-## Smart Email Notifications
+**Smart Email Notifications** -
 Users receive one email per day summarizing all relevant new books from their subscriptions.
 
-## Secure Authentication & Authorization
+**Secure Authentication & Authorization** -
 Robust endpoint protection and role-based access control using Spring Security.
 
-## Scheduled Notifications
+**Scheduled Notifications** -
 Automated daily email dispatch via Spring scheduling.
 
 # 🛠️ Tech Stack
